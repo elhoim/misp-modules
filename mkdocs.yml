@@ -11,33 +11,40 @@ site_url: https://www.misp-project.org/
 # Repository
 repo_name: 'MISP/misp-modules'
 repo_url: https://github.com/MISP/misp-modules/
-edit_uri: ""
+edit_uri: edit/main/docs/
 
 use_directory_urls: true
 
 # Copyright
-copyright: "Copyright &copy; 2019 MISP Project"
+copyright: "Copyright &copy; 2019-2024 MISP Project"
 
 # Options
 extra:
   search:
     languages: "en"
   social:
-    - type: globe
-      link: https://www.misp-project.org/
-    - type: github-alt
-      link: https://github.com/MISP
-    - type: twitter
-      link: https://twitter.com/MISPProject
+     - icon: fontawesome/brands/twitter
+       link: https://twitter.com/MISPProject
+     - icon: fontawesome/brands/github-alt
+       link: https://github.com/MISP
+
+plugins:
+  - tags
+
 
 theme:
   name: material
   palette:
-    primary: 'white'
-    accent: 'blue'
+      scheme: default
+
   language: en
   favicon: img/favicon.ico
-  logo: img/misp.png
+  logo: img/misp-modules-logo.png
+  feature:
+      - navigation.tabs
+      - navigation.tracking
+      - search.highlight
+      - search.share
 
 # Extensions
 markdown_extensions:
@@ -75,8 +82,9 @@ markdown_extensions:
   - pymdownx.tilde
 
 nav:
-    - Home: 'index.md'
+    - Home: index.md
     - Modules:
+      - Action Modules: action_mod.md
       - Expansion Modules: expansion.md
       - Export Modules: export_mod.md
       - Import Modules: import_mod.md
