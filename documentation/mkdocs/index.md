@@ -60,6 +60,7 @@ For more information: [Extending MISP with Python modules](https://www.misp-proj
 * [HYAS Insight Lookup](https://misp.github.io/misp-modules/expansion/#hyas-insight-lookup) - HYAS Insight integration to MISP provides direct, high volume access to HYAS Insight data. It enables investigators and analysts to understand and defend against cyber adversaries and their infrastructure.
 * [Intel471 Lookup](https://misp.github.io/misp-modules/expansion/#intel471-lookup) - Module to access Intel 471
 * [IP2Location.io Lookup](https://misp.github.io/misp-modules/expansion/#ip2location.io-lookup) - An expansion module to query IP2Location.io to gather more information on a given IP address.
+* [ipapi.is Lookup](https://misp.github.io/misp-modules/expansion/#ipapi.is-lookup) - An expansion and hover module to enrich an IP address with geolocation, ASN, company and abuse contact data, and VPN (with the provider), proxy, Tor and datacenter detection from ipapi.is.
 * [IPASN-History Lookup](https://misp.github.io/misp-modules/expansion/#ipasn-history-lookup) - Module to query an IP ASN history service (https://github.com/D4-project/IPASN-History).
 * [IPGeolocation.io Lookup](https://misp.github.io/misp-modules/expansion/#ipgeolocation.io-lookup) - An expansion and hover module to enrich an IP address with geolocation, ASN, company, threat intelligence (threat score, VPN, proxy, Tor, bot and spam signals) and abuse contact information from IPGeolocation.io, either through the API or from local IPGeolocation.io MMDB databases.
 * [IPInfo.io Lookup](https://misp.github.io/misp-modules/expansion/#ipinfo.io-lookup) - An expansion module to query ipinfo.io to gather more information on a given IP address.
@@ -113,6 +114,7 @@ For more information: [Extending MISP with Python modules](https://www.misp-proj
 * [Socialscan Lookup](https://misp.github.io/misp-modules/expansion/#socialscan-lookup) - A hover module to get information on the availability of an email address or username on some online platforms.
 * [SophosLabs Intelix Lookup](https://misp.github.io/misp-modules/expansion/#sophoslabs-intelix-lookup) - An expansion module to query the Sophoslabs intelix API to get additional information about an ip address, url, domain or sha256 attribute.
 * [URL Archiver](https://misp.github.io/misp-modules/expansion/#url-archiver) - Module to cache web pages of analysis reports, OSINT sources. The module returns a link of the cached page.
+* [SpamCop Lookup](https://misp.github.io/misp-modules/expansion/#spamcop-lookup) - Check an IPv4 address against the SpamCop Blocking List (SCBL).
 * [Stairwell Lookup](https://misp.github.io/misp-modules/expansion/#stairwell-lookup) - Module to query the Stairwell API to get additional information about the input hash attribute
 * [STIX2 Pattern Syntax Validator](https://misp.github.io/misp-modules/expansion/#stix2-pattern-syntax-validator) - An expansion hover module to perform a syntax check on stix2 patterns.
 * [ThreatCrowd Lookup](https://misp.github.io/misp-modules/expansion/#threatcrowd-lookup) - Module to get information from ThreatCrowd.
