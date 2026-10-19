@@ -98,28 +98,29 @@ On demand query API for OSINT.digitalside.it project.
 
 <img src=../logos/apivoid.png height=60>
 
-Module to query APIVoid with some domain attributes.
+Query APIVoid v2 for DNS records, SSL certificates and email verification.
 [[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/apivoid.py)]
 
 - **features**:
->This module takes a domain name and queries API Void to get the related DNS records and the SSL certificates. It returns then those pieces of data as MISP objects that can be added to the event.
+>This module queries APIVoid v2 for DNS records and SSL certificates of domains and hostnames, or verifies email addresses. Results are returned as MISP objects.
 >
->To make it work, a valid API key and enough credits to proceed 2 queries (0.06 + 0.07 credits) are required.
+>Configure `apikey` with a key from the APIVoid v2 dashboard (https://dash.apivoid.com/); v1 keys must be replaced. Each successful API call costs 1 credit: domain and hostname enrichment uses 2 calls, and email verification uses 1. Account overage settings apply.
 
 - **config**:
 >apikey
 
 - **input**:
->A domain attribute.
+>A domain, hostname or email attribute.
 
 - **output**:
->DNS records and SSL certificates related to the domain.
+>DNS records, X.509 certificates or an APIVoid email verification object.
 
 - **references**:
->https://www.apivoid.com/
+> - https://www.apivoid.com/
+> - https://docs.apivoid.com/
 
 - **requirements**:
->A valid APIVoid API key with enough credits to proceed 2 queries
+>An APIVoid v2 API key with 2 credits for domain lookups or 1 credit for email verification
 
 -----
 
@@ -1986,6 +1987,35 @@ Module to process a full query on Onyphe.
 
 -----
 
+#### [OpenCTI Lookup](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/opencti.py)
+
+Query an OpenCTI instance for exact observable matches and their context and source references.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/opencti.py)]
+
+- **features**:
+>Read-only GraphQL lookup using OpenCTI's FilterGroup API (OpenCTI 5.12 or later). Set url to the instance base URL (optionally ending in /graphql) and token to its API token. max_results defaults to 20 (1-100) and timeout to 30 seconds (1-120). Domains and IPs are normalized; file hashes, including filename|hash attributes, are matched against the specific hash algorithm. Results contain text context (description, score, author, labels, markings and timestamps), links to OpenCTI and external references. Imported attributes have to_ids=false; TLP markings are retained as tags and other markings as text. Custom markings and OpenCTI access controls are not translated into MISP sharing restrictions. No data is written to OpenCTI and no relationship traversal or synchronization is performed. A result cap notice is returned when more matches are available. No matches produce an empty Attribute list.
+
+- **config**:
+> - url
+> - token
+> - max_results
+> - timeout
+
+- **input**:
+>A domain, hostname, IP address, URL, email address or file hash (including filename|hash).
+
+- **output**:
+>MISP text and link attributes with provenance and TLP tags.
+
+- **references**:
+>https://docs.opencti.io/latest/reference/api/
+
+- **requirements**:
+> - requests
+> - An OpenCTI instance and an API token with knowledge read access.
+
+-----
+
 #### [AlienVault OTX Lookup](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/otx.py)
 
 <img src=../logos/otx.png height=60>
@@ -2677,6 +2707,35 @@ An expansion modules for SecurityTrails.
 - **requirements**:
 > - dnstrails python library
 > - An access to the SecurityTrails API (apikey)
+
+-----
+
+#### [Sherlock Lookup](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/sherlock.py)
+
+Find social media accounts by username with Sherlock.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/sherlock.py)]
+
+- **features**:
+>Runs the Sherlock CLI and returns user-account objects for claimed usernames only. Text is searched as a single literal username, without extracting names or generating variants. Email input uses the local part before @ as a candidate username; matches do not verify email ownership or identity. Install Sherlock for the misp-modules service user and put sherlock on its PATH, or set sherlock_path to the executable's absolute path (not a shell command). Optional sites is a comma-separated list of Sherlock site names; github-username defaults to GitHub only. timeout is the per-site timeout in seconds (default 10); scan_timeout bounds the whole process (default 120). Both must be positive finite numbers. Keep scan_timeout below the MISP enrichment and module-server request timeouts, or raise those timeouts for broad searches. Sherlock contacts the selected sites and downloads its current site definitions. Results can contain false positives and should be reviewed.
+
+- **config**:
+> - sherlock_path
+> - sites
+> - timeout
+> - scan_timeout
+
+- **input**:
+>A target-user, github-username, text, or email attribute. A leading @ on a username is removed.
+
+- **output**:
+>One user-account object per match, with username, platform, profile link and a reference to the input.
+
+- **references**:
+> - https://github.com/sherlock-project/sherlock
+> - https://sherlockproject.xyz/usage
+
+- **requirements**:
+>Install the sherlock-project CLI separately (for example: pipx install sherlock-project). No API key required.
 
 -----
 
