@@ -159,11 +159,13 @@ For more information: [Extending MISP with Python modules](https://www.misp-proj
 * [Event to PDF Export](https://misp.github.io/misp-modules/export_mod/#event-to-pdf-export) - Simple export of a MISP event to PDF.
 * [QRadar Reference Set Export](https://misp.github.io/misp-modules/export_mod/#qradar-reference-set-export) - Export deduplicated, typed MISP indicators as QRadar reference-set CSV or JSON values.
 * [Splunk Lookup Export](https://misp.github.io/misp-modules/export_mod/#splunk-lookup-export) - Export event and object indicators as a Splunk CSV lookup with CIM field mapping hints.
+* [Squid Proxy Export](https://misp.github.io/misp-modules/export_mod/#squid-proxy-export) - Export IDS-marked event and object attributes as Squid proxy ACLs and deny rules.
 * [Test Export](https://misp.github.io/misp-modules/export_mod/#test-export) - Skeleton export module.
 * [ThreatStream Export](https://misp.github.io/misp-modules/export_mod/#threatstream-export) - Module to export a structured CSV file for uploading to threatStream.
 * [ThreadConnect Export](https://misp.github.io/misp-modules/export_mod/#threadconnect-export) - Module to export a structured CSV file for uploading to ThreatConnect.
 * [VirusTotal Collections Export](https://misp.github.io/misp-modules/export_mod/#virustotal-collections-export) - Creates a VT Collection from an event iocs.
 * [VirusTotal Graph Export](https://misp.github.io/misp-modules/export_mod/#virustotal-graph-export) - This module is used to create a VirusTotal Graph from a MISP event.
+* [Wazuh CDB Export](https://misp.github.io/misp-modules/export_mod/#wazuh-cdb-export) - Export MISP event and object indicators as a typed Wazuh CDB source list.
 * [YARA Rule Export](https://misp.github.io/misp-modules/export_mod/#yara-rule-export) - This module is used to export MISP events to YARA.
 * [Zeek Intel Export](https://misp.github.io/misp-modules/export_mod/#zeek-intel-export) - Export validated MISP event and object indicators as a Zeek Intel Framework feed.
 
@@ -195,6 +197,7 @@ For more information: [Extending MISP with Python modules](https://www.misp-proj
 * [SentinelOne IOC Publish](https://misp.github.io/misp-modules/action_mod/#sentinelone-ioc-publish) - Publish MISP event and object indicators to SentinelOne Threat Intelligence with explicit scope.
 * [Slack](https://misp.github.io/misp-modules/action_mod/#slack) - Simplistic module to send messages to a Slack channel.
 * [Test action](https://misp.github.io/misp-modules/action_mod/#test-action) - This module is merely a test, always returning true. Triggers on event publishing.
+* [Wazuh CDB Publish](https://misp.github.io/misp-modules/action_mod/#wazuh-cdb-publish) - Upload MISP event and object indicators to an explicitly named Wazuh CDB source list.
 
 
 ## How to contribute your own module?

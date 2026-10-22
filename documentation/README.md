@@ -3510,8 +3510,7 @@ Module to export a MISP event in CEF format.
 [[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/cef_export.py)]
 
 - **features**:
->The module takes a MISP event in input, to look every attribute. Each attribute matching with some predefined types is then exported in Common Event Format.
->Thus, there is no particular feature concerning MISP Events since any event can be exported. However, 4 configuration parameters recognized by CEF format are required and should be provided by users before exporting data: the device vendor, product and version, as well as the default severity of data.
+>Exports supported event and object attributes as UTF-8 CEF file records, with standard escaping and field validation. IPv6 address records use CEF:1; other records use CEF:0. Device settings and severity have defaults. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/export_mod/cef_export.md) for mappings and compatibility changes.
 
 - **config**:
 > - Default_Severity
@@ -3520,13 +3519,13 @@ Module to export a MISP event in CEF format.
 > - Device_Version
 
 - **input**:
->MISP Event attributes
+>MISP events and object attributes in standard, bare or legacy export format.
 
 - **output**:
 >Common Event Format file
 
 - **references**:
->https://community.softwaregrp.com/t5/ArcSight-Connectors/ArcSight-Common-Event-Format-CEF-Guide/ta-p/1589306?attachment-id=65537
+>https://www.microfocus.com/documentation/arcsight/arcsight-smartconnectors-24.3/pdfdoc/cef-implementation-standard/cef-implementation-standard.pdf
 
 -----
 
@@ -3826,6 +3825,26 @@ Export event and object indicators as a Splunk CSV lookup with CIM field mapping
 
 -----
 
+#### [Squid Proxy Export](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/squid_export.py)
+
+Export IDS-marked event and object attributes as Squid proxy ACLs and deny rules.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/squid_export.py)]
+
+- **features**:
+>Exports validated addresses/networks, domains, hostnames, HTTP(S) URLs and destination ports as deduplicated Squid ACLs with http_access deny rules. Composite attributes retain their constraints. Only to_ids attributes are included; deleted data is excluded. No network access or additional dependency is required. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/export_mod/squid_export.md).
+
+- **input**:
+>MISP events and object attributes in standard, bare or legacy export format.
+
+- **output**:
+>Base64-encoded Squid .conf fragment; skipped counts and integration warnings in the API response.
+
+- **references**:
+> - https://www.squid-cache.org/Doc/config/acl/
+> - https://www.squid-cache.org/Doc/config/http_access/
+
+-----
+
 #### [Test Export](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/testexport.py)
 
 Skeleton export module.
@@ -3955,6 +3974,29 @@ This module is used to create a VirusTotal Graph from a MISP event.
 
 - **requirements**:
 >vt_graph_api, the python library to query the VirusTotal graph API
+
+-----
+
+#### [Wazuh CDB Export](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/wazuh_cdb_export.py)
+
+Export MISP event and object indicators as a typed Wazuh CDB source list.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/wazuh_cdb_export.py)]
+
+- **features**:
+>Produces a sorted, deduplicated key-only CDB list for one indicator type: IPv4, IPv6, domain, MD5, SHA-1, SHA-256 or SHA-512. Defaults to to_ids IPv4 attributes. Includes object attributes, normalizes values, quotes IPv6 keys and excludes deleted data. No Wazuh connection is needed. Register the list and reload analysisd through the Wazuh API to activate detection. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/export_mod/wazuh_cdb_export.md).
+
+- **config**:
+> - indicator_type
+> - include_non_ids
+
+- **input**:
+>MISP events, including object attributes, in standard, bare or legacy format.
+
+- **output**:
+>Base64-encoded CDB source text, with counts, warnings and provenance outside the file.
+
+- **references**:
+>https://documentation.wazuh.com/current/user-manual/ruleset/cdb-list.html
 
 -----
 
@@ -4507,5 +4549,35 @@ This module is merely a test, always returning true. Triggers on event publishin
 
 - **config**:
 >{'params': {'foo': {'type': 'string', 'description': 'blablabla', 'value': 'xyz'}, 'Data extraction path': {'type': 'hash_path', 'description': 'Only post content extracted from this path', 'value': 'Attribute.{n}.AttributeTag.{n}.Tag.name'}}, 'blocking': False, 'support_filters': False, 'expect_misp_core_format': False}
+
+-----
+
+#### [Wazuh CDB Publish](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/wazuh_cdb_publish.py)
+
+Upload MISP event and object indicators to an explicitly named Wazuh CDB source list.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/wazuh_cdb_publish.py)]
+
+- **features**:
+>Uploads one typed, deduplicated list of to_ids indicators using PUT /lists/files/{filename}. Credentials come from the module server environment. Supports a credential-free dry run and explicit overwrite; overwrite replaces the entire list with the supplied snapshot. Checks the Wazuh acknowledgement, refuses empty lists and optionally requests an analysisd reload on the manager or cluster without a full manager restart. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/action_mod/wazuh_cdb_publish.md).
+
+- **config**:
+>{'params': {'filename': {'type': 'string', 'description': 'Required: dedicated list basename, e.g. misp-ipv4'}, 'indicator_type': {'type': 'string', 'description': 'ipv4, ipv6, domain, md5, sha1, sha256 or sha512', 'value': 'ipv4'}, 'overwrite': {'type': 'string', 'description': 'true replaces the complete existing file with this snapshot', 'value': 'false'}, 'dry_run': {'type': 'string', 'description': 'true previews the upload without network access', 'value': 'false'}, 'reload': {'type': 'string', 'description': 'none (upload only), manager (local node) or cluster (all nodes): reload analysisd after upload', 'value': 'none'}}, 'blocking': True, 'support_filters': False, 'expect_misp_core_format': True}
+
+- **input**:
+>Selected MISP events and object attributes in workflow data.
+
+- **output**:
+>Upload and reload status, selected filename, indicator counts, content SHA-256 and activation notice.
+
+- **references**:
+> - https://documentation.wazuh.com/current/user-manual/api/reference.html#tag/Lists
+> - https://documentation.wazuh.com/current/user-manual/api/reference.html#tag/Manager
+> - https://documentation.wazuh.com/current/user-manual/api/reference.html#tag/Cluster
+> - https://documentation.wazuh.com/current/user-manual/ruleset/cdb-list.html
+
+- **requirements**:
+> - requests
+> - Wazuh server API credentials with lists:update and lists:delete permissions
+> - Optional reload: manager:read/manager:restart or cluster:read/cluster:restart permissions
 
 -----
