@@ -981,6 +981,35 @@ Module to access Farsight DNSDB Passive DNS.
 
 -----
 
+#### [GCVE CPE](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/gcve_cpe.py)
+
+Expand CPE attributes with GCVE CPE catalog metadata, package mappings and vulnerability references.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/gcve_cpe.py)]
+
+- **features**:
+>Query the public CPE Editor API without an API key. Search results are checked for an exact CPE URI match. Catalog metadata, deprecation information and PURL mappings are retained in a related annotation. Vulnerability references become vulnerability objects with their cpe_applicability and rationale preserved. Only references marked vulnerable populate vulnerable-configuration; other applicability states are context. api_url defaults to https://cpe.gcve.eu (instance root, without /api); timeout defaults to 30 seconds per request (maximum 120); max_pages defaults to 5 (1-20), with 100 search results per page. Blank or null settings use defaults. CPE 2.3 and URI bindings are looked up literally, without conversion.
+
+- **config**:
+> - api_url
+> - timeout
+> - max_pages
+
+- **input**:
+>CPE attribute.
+
+- **output**:
+>A catalog annotation and related vulnerability objects in MISP standard format.
+
+- **references**:
+> - https://cpe.gcve.eu/api/docs
+> - https://cpe.gcve.eu/api/openapi.yaml
+
+- **requirements**:
+> - requests
+> - pymisp
+
+-----
+
 #### [GeoIP ASN Lookup](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/geoip_asn.py)
 
 <img src=../logos/maxmind.png height=60>
@@ -2825,6 +2854,37 @@ Expands a SigMF Recording object into a SigMF Expanded Recording object, extract
 
 - **features**:
 >
+
+-----
+
+#### [SoChain](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/sochain.py)
+
+Get the balance, activity, counterparties and address poisoning findings of a BTC, LTC, DOGE or ZEC address from SoChain.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/sochain.py)]
+
+- **features**:
+>Query the SoChain API v3 for a btc attribute or a coin-address object. A btc attribute is looked up on Bitcoin. A coin-address object is looked up on the network named by its symbol (BTC, LTC, DOGE or ZEC); without a symbol, the network is the first of Bitcoin, Litecoin, Dogecoin and Zcash on which SoChain says the address is valid.
+>
+>The result is a coin-address object with the balance, total received and sent, the number of transactions and the first and last activity, referencing the input. Recent counterparties are returned as coin-address objects linked with `paid` references (5 on hover, 50 when the magnifying glass is clicked), whose comments give the amount, transaction and block. When look-alike addresses sent the address dust to poison its history, each one is returned as a coin-address object that `impersonates` the address it copies.
+>
+>No API key is needed for up to 2,500 lookups a day per IP. With a key from https://sochain.com/dashboard, lookups count against that account's plan.
+
+- **config**:
+>apikey
+
+- **input**:
+>A btc attribute, or a coin-address object with a BTC, LTC, DOGE or ZEC address.
+
+- **output**:
+>coin-address objects: the address, its recent counterparties and any look-alike addresses.
+
+- **references**:
+> - https://sochain.com/docs
+> - https://sochain.com/api/v3/openapi.json
+
+- **requirements**:
+> - requests
+> - PyMISP
 
 -----
 

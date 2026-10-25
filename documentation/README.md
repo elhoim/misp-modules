@@ -984,6 +984,35 @@ Module to access Farsight DNSDB Passive DNS.
 
 -----
 
+#### [GCVE CPE](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/gcve_cpe.py)
+
+Expand CPE attributes with GCVE CPE catalog metadata, package mappings and vulnerability references.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/gcve_cpe.py)]
+
+- **features**:
+>Query the public CPE Editor API without an API key. Search results are checked for an exact CPE URI match. Catalog metadata, deprecation information and PURL mappings are retained in a related annotation. Vulnerability references become vulnerability objects with their cpe_applicability and rationale preserved. Only references marked vulnerable populate vulnerable-configuration; other applicability states are context. api_url defaults to https://cpe.gcve.eu (instance root, without /api); timeout defaults to 30 seconds per request (maximum 120); max_pages defaults to 5 (1-20), with 100 search results per page. Blank or null settings use defaults. CPE 2.3 and URI bindings are looked up literally, without conversion.
+
+- **config**:
+> - api_url
+> - timeout
+> - max_pages
+
+- **input**:
+>CPE attribute.
+
+- **output**:
+>A catalog annotation and related vulnerability objects in MISP standard format.
+
+- **references**:
+> - https://cpe.gcve.eu/api/docs
+> - https://cpe.gcve.eu/api/openapi.yaml
+
+- **requirements**:
+> - requests
+> - pymisp
+
+-----
+
 #### [GeoIP ASN Lookup](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/geoip_asn.py)
 
 <img src=logos/maxmind.png height=60>
@@ -2549,6 +2578,37 @@ Expands a SigMF Recording object into a SigMF Expanded Recording object, extract
 
 -----
 
+#### [SoChain](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/sochain.py)
+
+Get the balance, activity, counterparties and address poisoning findings of a BTC, LTC, DOGE or ZEC address from SoChain.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/sochain.py)]
+
+- **features**:
+>Query the SoChain API v3 for a btc attribute or a coin-address object. A btc attribute is looked up on Bitcoin. A coin-address object is looked up on the network named by its symbol (BTC, LTC, DOGE or ZEC); without a symbol, the network is the first of Bitcoin, Litecoin, Dogecoin and Zcash on which SoChain says the address is valid.
+>
+>The result is a coin-address object with the balance, total received and sent, the number of transactions and the first and last activity, referencing the input. Recent counterparties are returned as coin-address objects linked with `paid` references (5 on hover, 50 when the magnifying glass is clicked), whose comments give the amount, transaction and block. When look-alike addresses sent the address dust to poison its history, each one is returned as a coin-address object that `impersonates` the address it copies.
+>
+>No API key is needed for up to 2,500 lookups a day per IP. With a key from https://sochain.com/dashboard, lookups count against that account's plan.
+
+- **config**:
+>apikey
+
+- **input**:
+>A btc attribute, or a coin-address object with a BTC, LTC, DOGE or ZEC address.
+
+- **output**:
+>coin-address objects: the address, its recent counterparties and any look-alike addresses.
+
+- **references**:
+> - https://sochain.com/docs
+> - https://sochain.com/api/v3/openapi.json
+
+- **requirements**:
+> - requests
+> - PyMISP
+
+-----
+
 #### [Socialscan Lookup](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/socialscan.py)
 
 A hover module to get information on the availability of an email address or username on some online platforms.
@@ -3529,6 +3589,30 @@ Module to export a MISP event in CEF format.
 
 -----
 
+#### [Cisco ASA ACL Export](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/cisco_asa_export.py)
+
+Export IDS-marked network attributes as Cisco ASA 9.x IPv4/IPv6 extended ACL entries.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/cisco_asa_export.py)]
+
+- **features**:
+>Exports validated IDS-marked event and object network attributes as deduplicated IPv4/IPv6 configuration fragments. Preserves source/destination address and port constraints. Deleted data is excluded. DNS-only attributes require opt-in resolve_dns. No device connection or additional dependency is required. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/export_mod/cisco_asa_export.md) for configuration, logging semantics and policy integration.
+
+- **config**:
+> - mode
+> - name_prefix
+> - resolve_dns
+
+- **input**:
+>MISP events and object attributes in standard, bare or legacy export format.
+
+- **output**:
+>Base64-encoded configuration fragment; rule counts, skipped counts and integration warnings.
+
+- **references**:
+>https://www.cisco.com/c/en/us/td/docs/security/asa/asa-cli-reference/A-H/asa-command-ref-A-H/aa-ac-commands.html
+
+-----
+
 #### [Cisco fireSIGHT blockrule Export](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/cisco_firesight_manager_ACL_rule_export.py)
 
 <img src=logos/cisco.png height=60>
@@ -3607,6 +3691,33 @@ Export event and object indicators as ECS threat indicators in Elasticsearch Bul
 
 -----
 
+#### [Fortinet FortiOS ACL Export](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/fortios_export.py)
+
+Export IDS-marked network attributes as FortiOS 7.4+ address objects, services and firewall policies.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/fortios_export.py)]
+
+- **features**:
+>Exports validated IDS-marked event and object network attributes as deduplicated IPv4/IPv6 configuration fragments. Preserves source/destination address and port constraints. Deleted data is excluded. DNS-only attributes require opt-in resolve_dns. No device connection or additional dependency is required. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/export_mod/fortios_export.md) for configuration, logging semantics and policy integration.
+
+- **config**:
+> - mode
+> - name_prefix
+> - resolve_dns
+> - srcintf
+> - dstintf
+> - start_policy_id
+
+- **input**:
+>MISP events and object attributes in standard, bare or legacy export format.
+
+- **output**:
+>Base64-encoded configuration fragment; rule counts, skipped counts and integration warnings.
+
+- **references**:
+>https://docs.fortinet.com/document/fortigate/7.4.8/cli-reference/333889629/config-firewall-policy
+
+-----
+
 #### [GoAML Export](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/goamlexport.py)
 
 <img src=logos/goAML.jpg height=60>
@@ -3655,6 +3766,30 @@ This module is used to export MISP events containing transaction objects into Go
 
 -----
 
+#### [Juniper Junos ACL Export](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/junos_export.py)
+
+Export IDS-marked network attributes as Junos inet/inet6 stateless firewall filter set commands.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/junos_export.py)]
+
+- **features**:
+>Exports validated IDS-marked event and object network attributes as deduplicated IPv4/IPv6 configuration fragments. Preserves source/destination address and port constraints. Deleted data is excluded. DNS-only attributes require opt-in resolve_dns. No device connection or additional dependency is required. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/export_mod/junos_export.md) for configuration, logging semantics and policy integration.
+
+- **config**:
+> - mode
+> - name_prefix
+> - resolve_dns
+
+- **input**:
+>MISP events and object attributes in standard, bare or legacy export format.
+
+- **output**:
+>Base64-encoded configuration fragment; rule counts, skipped counts and integration warnings.
+
+- **references**:
+>https://www.juniper.net/documentation/us/en/software/junos/routing-policy/topics/concept/firewall-filter-overview.html
+
+-----
+
 #### [Lite Export](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/liteexport.py)
 
 Lite export of a MISP event.
@@ -3695,6 +3830,31 @@ Export MISP event in Event Query Language
 
 -----
 
+#### [MikroTik RouterOS ACL Export](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/mikrotik_export.py)
+
+Export IDS-marked network attributes as RouterOS IPv4/IPv6 firewall filter commands.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/mikrotik_export.py)]
+
+- **features**:
+>Exports validated IDS-marked event and object network attributes as deduplicated IPv4/IPv6 configuration fragments. Preserves source/destination address and port constraints. Deleted data is excluded. DNS-only attributes require opt-in resolve_dns. No device connection or additional dependency is required. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/export_mod/mikrotik_export.md) for configuration, logging semantics and policy integration.
+
+- **config**:
+> - mode
+> - name_prefix
+> - resolve_dns
+> - chain
+
+- **input**:
+>MISP events and object attributes in standard, bare or legacy export format.
+
+- **output**:
+>Base64-encoded configuration fragment; rule counts, skipped counts and integration warnings.
+
+- **references**:
+>https://help.mikrotik.com/docs/spaces/ROS/pages/48660574/Filter
+
+-----
+
 #### [Nexthink NXQL Export](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/nexthinkexport.py)
 
 <img src=logos/nexthink.svg height=60>
@@ -3723,17 +3883,52 @@ Nexthink NXQL query export module
 
 <img src=logos/osquery.png height=60>
 
-OSQuery export of a MISP event.
+Export MISP event and object indicators as an osquery query pack.
 [[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/osqueryexport.py)]
 
 - **features**:
->This module export an event as osquery queries that can be used in packs or in fleet management solution like Kolide.
+>Produces a JSON query pack with per-query platform selectors and intervals. Validated against osquery 5.24.0. Defaults to IDS-marked attributes, includes object attributes and excludes deleted data. File scans require an explicit scan_path. Set format=sql for legacy SQL text. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/export_mod/osqueryexport.md).
+
+- **config**:
+> - format
+> - interval
+> - scan_path
+> - include_non_ids
 
 - **input**:
->MISP Event attributes
+>MISP events and object attributes.
 
 - **output**:
->osquery SQL queries
+>Base64-encoded JSON query pack (default) or SQL text, with counts and provenance.
+
+- **references**:
+>https://osquery.readthedocs.io/en/stable/deployment/configuration/
+
+-----
+
+#### [Palo Alto PAN-OS ACL Export](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/panos_export.py)
+
+Export IDS-marked network attributes as PAN-OS local security policy set commands.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/panos_export.py)]
+
+- **features**:
+>Exports validated IDS-marked event and object network attributes as deduplicated IPv4/IPv6 configuration fragments. Preserves source/destination address and port constraints. Deleted data is excluded. DNS-only attributes require opt-in resolve_dns. No device connection or additional dependency is required. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/export_mod/panos_export.md) for configuration, logging semantics and policy integration.
+
+- **config**:
+> - mode
+> - name_prefix
+> - resolve_dns
+> - from_zone
+> - to_zone
+
+- **input**:
+>MISP events and object attributes in standard, bare or legacy export format.
+
+- **output**:
+>Base64-encoded configuration fragment; rule counts, skipped counts and integration warnings.
+
+- **references**:
+>https://docs.paloaltonetworks.com/pan-os/11-1/pan-os-cli-quick-start
 
 -----
 
@@ -4447,6 +4642,31 @@ Create and renew module-owned Falcon custom IOCs from MISP event and object attr
 
 -----
 
+#### [Matrix](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/matrix.py)
+
+Send a message to an unencrypted Matrix room.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/matrix.py)]
+
+- **features**:
+>Renders Jinja2 templates using matchingData when present, otherwise data, with a JSON fallback. Sends plain-text m.room.message events using a bot access token. The bot must already be a room member with permission to send messages. End-to-end encrypted rooms and HTML/Markdown formatting are unsupported. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/action_mod/matrix.md).
+
+- **config**:
+>{'params': {'matrix_homeserver': {'type': 'string', 'description': 'The Matrix homeserver base URL, including scheme and optional path prefix', 'value': 'https://matrix.example.org'}, 'bot_access_token': {'type': 'string', 'description': 'Access token for a Matrix bot that has joined the room'}, 'room_id': {'type': 'string', 'description': 'The unencrypted room ID (starting with !), not a room alias'}, 'message_template': {'type': 'large_string', 'description': 'Jinja2 template for the plain-text message; leave empty to send the workflow data as JSON', 'value': 'MISP event: {{ Event.info }}', 'jinja_supported': True}}, 'blocking': False, 'support_filters': True, 'expect_misp_core_format': False}
+
+- **input**:
+>Workflow data or matchingData, and an optional Jinja2 message template.
+
+- **output**:
+>Boolean success; errors indicate an unsuccessful or unacknowledged send.
+
+- **references**:
+>https://spec.matrix.org/latest/client-server-api/#put_matrixclientv3roomsroomidsendeventtypetxnid
+
+- **requirements**:
+>requests
+
+-----
+
 #### [Mattermost](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/mattermost.py)
 
 Simplistic module to send message to a Mattermost channel.
@@ -4470,6 +4690,33 @@ Simplistic module to send a message to a Nextcloud talk conversation.
 
 - **config**:
 >{'params': {'nextcloud_baseurl': {'type': 'string', 'description': 'The Nexctloud domain or URL', 'value': 'https://example.nextcloud.org:443'}, 'nextcloud_app_uuid_login': {'type': 'string', 'description': 'The nextcloud username'}, 'app_access_token': {'type': 'string', 'description': 'The nextcloud application token'}, 'nextcloud_conversation_token': {'type': 'string', 'description': 'The token of the conversation the message should be sent to'}, 'message_template': {'type': 'large_string', 'description': 'The template to be used to generate the message to be posted', 'value': 'The **template** will be rendered using *Jinja2*!', 'jinja_supported': True}}, 'blocking': False, 'support_filters': True, 'expect_misp_core_format': False}
+
+-----
+
+#### [OSQuery Pack Publish](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/osquery_pack_publish.py)
+
+<img src=logos/osquery.png height=60>
+
+Publish a MISP query pack to a configured local osquery pack directory.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/osquery_pack_publish.py)]
+
+- **features**:
+>Atomically publishes a named pack under OSQUERY_PACK_DIRECTORY. Defaults to dry run; existing packs require explicit overwrite. Reuses the export's platform selectors, IDS filtering and bounded scan paths. Publication does not execute queries or reload osquery. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/action_mod/osquery_pack_publish.md).
+
+- **config**:
+>{'params': {'pack_name': {'type': 'string', 'description': 'Required: pack basename, letters/digits/_/- only'}, 'interval': {'type': 'string', 'description': 'Query interval in seconds', 'value': '3600'}, 'scan_path': {'type': 'string', 'description': 'Absolute osquery file path pattern for file scans'}, 'dry_run': {'type': 'string', 'description': 'Preview without writing files', 'value': 'true'}, 'overwrite': {'type': 'string', 'description': 'Replace the complete named pack with this snapshot', 'value': 'false'}}, 'blocking': True, 'support_filters': False, 'expect_misp_core_format': True}
+
+- **input**:
+>Selected MISP events and object attributes in workflow data.
+
+- **output**:
+>Publication status, pack content, counts, provenance and content SHA-256.
+
+- **references**:
+>https://osquery.readthedocs.io/en/stable/deployment/configuration/#query-packs
+
+- **requirements**:
+>OSQUERY_PACK_DIRECTORY on the module server; filesystem pack distribution and config reload
 
 -----
 
