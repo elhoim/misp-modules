@@ -23,6 +23,7 @@ dependencies = [
     "tornado>=6.5.10,<6.6",  # keep Python 3.10 support
     "certifi>=2026.10.19",  # remove the compromised emSign root
     "urllib3>=2.8.0",
+    "idna>=3.10,<4",
     "Brotli>=1.2.1; platform_python_implementation == 'CPython'",
     "brotlicffi>=1.2.1.0; platform_python_implementation != 'CPython'",
     "click==8.1.8",  # greynoise requires it
@@ -31,6 +32,7 @@ dependencies = [
     "jinja2",
     "markdownify",
     "pymisp>=2.5.34.1",
+    "python-dateutil>=2.9.0.post0,<3.0.0",  # pypssl requires dateutil <3
     "publicsuffixlist",
     "setuptools",
 ]
@@ -40,7 +42,7 @@ minimal = [
     ## pinned module dependencies
     "censys==2.0.9",
     "socialscan<2.0.0",
-    "yara-python==4.5.0",
+    "yara-python==4.5.4",
     ## module dependencies
     "backscatter",
     "blockchain",
@@ -49,6 +51,7 @@ minimal = [
     "dnsdb2",
     "dnspython",
     "domaintools_api",
+    "ddgs>=9.16.1,<10",
     "geoip2",
     "greynoise",
     "jbxapi",
@@ -58,6 +61,7 @@ minimal = [
     "mattermostdriver",
     "oauth2",
     "passivetotal",
+    "phonenumbers>=9.0,<10.0",
     "ptrclassify>=0.3.0,<0.4.0",
     "pycountry",
     "pyeti-python3",
@@ -84,7 +88,8 @@ all = [
     ## pinned module dependencies
     "censys==2.0.9",  ## in minimal
     "socialscan<2.0.0",  ## in minimal
-    "yara-python==4.5.0",  ## in minimal
+    "yara-python==4.5.4",  ## in minimal
+    "plyara>=2.2,<2.2.7",  # 2.2.7+ bundles incompatible ply, breaking pandoc imports
     "numpy>=2.0.0",
     "pandas>=2.0.0,<3.0.0",
     "pandas_ods_reader>=1.0.0",
@@ -96,11 +101,13 @@ all = [
     "assemblyline_client",
     "backscatter",  ## in minimal
     "blockchain",   ## in minimal
+    "cccs-yara>=2.11,<3",
     "clamd",   ## in minimal
     "crowdstrike-falconpy",   ## in minimal
     "dnsdb2",  ## in minimal
     "dnspython",  ## in minimal
     "domaintools_api",   ## in minimal
+    "ddgs>=9.16.1,<10",   ## in minimal
     "geoip2",  ## in minimal
     "greynoise",  ## in minimal
     "jbxapi",   ## in minimal
@@ -108,13 +115,14 @@ all = [
     "matplotlib",   ## in minimal
     "mattermostdriver",   ## in minimal
     "misp-stix>=2026.6.1",
-    "mwdblib",
+    "mwdblib>=4.0.0",
     "ndjson",  ## in minimal
     "oauth2",   ## in minimal
     "opencv-python",
     "openpyxl",
     "pandoc",
     "passivetotal",   ## in minimal
+    "phonenumbers>=9.0,<10.0",  ## in minimal
     "pdftotext",
     "ptrclassify>=0.3.0,<0.4.0",  ## in minimal
     "pycountry",  ## in minimal

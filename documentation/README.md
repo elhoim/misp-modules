@@ -320,6 +320,31 @@ An expansion hover module to get a blockchain balance from a BTC address in MISP
 
 -----
 
+#### [CCCS YARA Metadata Validator](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/cccs_yara.py)
+
+<img src=logos/yara.png height=60>
+
+Validate YARA rule metadata against the CCCS YARA specification.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/cccs_yara.py)]
+
+- **features**:
+>Checks every rule in a YARA attribute using the upstream CCCS specification and returns errors and warnings per rule. Metadata generation is disabled and the original attribute is preserved. YARA file includes are disabled. Install the ATT&CK dataset before starting the module server; see the [setup and examples](https://github.com/MISP/misp-modules/blob/main/documentation/expansion/cccs_yara.md).
+
+- **input**:
+>A YARA attribute containing one or more rules.
+
+- **output**:
+>Text describing CCCS metadata validity, errors and warnings for each rule.
+
+- **references**:
+>https://github.com/CybercentreCanada/CCCS-Yara
+
+- **requirements**:
+> - cccs-yara Python library
+> - Local MITRE ATT&CK STIX data (MITRE_STIX_DATA_PATH)
+
+-----
+
 #### [Censys Enrich](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/censys_enrich.py)
 
 An expansion module to enrich attributes in MISP by quering the censys.io API
@@ -886,6 +911,34 @@ DomainTools MISP expansion module.
 
 -----
 
+#### [DuckDuckGo Search](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/duckduckgo_search.py)
+
+Search DuckDuckGo for web references to an attribute without an API key.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/duckduckgo_search.py)]
+
+- **features**:
+>Searches the attribute value using the ddgs DuckDuckGo backend, without automatic provider fallback. Returns annotation objects containing result links, titles and snippets, related to the input attribute. max_results defaults to 5 (1-25); timeout defaults to 10 seconds (1-60) per search request. Blank settings use defaults. Searches use the library's us-en region and moderate safe search. This unofficial search integration can be rate-limited or broken by upstream changes. The attribute value is sent to DuckDuckGo; result pages are not downloaded. Search results are references for review, not maliciousness verdicts.
+
+- **config**:
+> - max_results
+> - timeout
+
+- **input**:
+>A URL, domain, hostname or text attribute.
+
+- **output**:
+>Related annotation objects with search result links, titles and snippets; to_ids is false.
+
+- **references**:
+> - https://github.com/deedy5/ddgs
+> - https://github.com/MISP/misp-modules/issues/601
+
+- **requirements**:
+> - ddgs>=9.16.1,<10
+> - pymisp
+
+-----
+
 #### [EQL Query Generator](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/eql.py)
 
 <img src=logos/eql.png height=60>
@@ -1017,17 +1070,27 @@ Expand CPE attributes with GCVE CPE catalog metadata, package mappings and vulne
 
 <img src=logos/maxmind.png height=60>
 
-Query a local copy of the Maxmind Geolite ASN database (MMDB format)
+Query a local copy of the MaxMind GeoLite2 ASN database (MMDB format)
 [[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/geoip_asn.py)]
 
 - **features**:
->The module takes an IP address attribute as input and queries a local copy of the Maxmind's Geolite database to get information about the related AS number.
+>The module takes an IP address attribute as input and queries a local copy of the MaxMind GeoLite2 ASN database to get information about the related AS number.
 
 - **config**:
->local_geolite_db
+>local_geoip_db, local_geolite_db
+
+Set `local_geoip_db` to the full path of the database on the **misp-modules server** (or inside its container). The service user must have read access to the file. Use an extracted GeoLite2 ASN `.mmdb` file. The ASN module requires the ASN database; GeoIP2 ISP and other database products are not compatible with this lookup. Download and extract the database before configuring the module; compressed archives, CSV files, and legacy `.dat` files are not supported.
+
+Existing `local_geolite_db` configurations remain supported. A nonempty `local_geoip_db` takes precedence; if it cannot be loaded, the module returns an error without falling back to another database.
+
+Example query configuration:
+
+```json
+{"config": {"local_geoip_db": "/var/lib/GeoIP/GeoLite2-ASN.mmdb"}}
+```
 
 - **descrption**:
->An expansion module to query a local copy of Maxmind's Geolite database with an IP address, in order to get information about its related AS number.
+>An expansion module to query a local copy of MaxMind GeoLite2 ASN database with an IP address, in order to get information about its related AS number.
 
 - **input**:
 >An IP address MISP attribute.
@@ -1039,7 +1102,7 @@ Query a local copy of the Maxmind Geolite ASN database (MMDB format)
 >https://www.maxmind.com/en/home
 
 - **requirements**:
->A local copy of Maxmind's Geolite database
+>A local copy of MaxMind GeoLite2 ASN database
 
 -----
 
@@ -1047,14 +1110,24 @@ Query a local copy of the Maxmind Geolite ASN database (MMDB format)
 
 <img src=logos/maxmind.png height=60>
 
-An expansion module to query a local copy of Maxmind's Geolite database with an IP address, in order to get information about the city where it is located.
+An expansion module to query a local copy of MaxMind GeoIP2 or GeoLite2 database with an IP address, in order to get information about the city where it is located.
 [[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/geoip_city.py)]
 
 - **features**:
->The module takes an IP address attribute as input and queries a local copy of the Maxmind's Geolite database to get information about the city where this IP address is located.
+>The module takes an IP address attribute as input and queries a local copy of the MaxMind GeoIP2 or GeoLite2 database to get information about the city where this IP address is located.
 
 - **config**:
->local_geolite_db
+>local_geoip_db, local_geolite_db
+
+Set `local_geoip_db` to the full path of the database on the **misp-modules server** (or inside its container). The service user must have read access to the file. Use an extracted GeoIP2 City (paid) or GeoLite2 City `.mmdb` file. Download and extract the database before configuring the module; compressed archives, CSV files, and legacy `.dat` files are not supported.
+
+Existing `local_geolite_db` configurations remain supported, including paths to paid databases. A nonempty `local_geoip_db` takes precedence; if it cannot be loaded, the module returns an error without falling back to another database.
+
+Example query configuration:
+
+```json
+{"config": {"local_geoip_db": "/var/lib/GeoIP/GeoIP2-City.mmdb"}}
+```
 
 - **input**:
 >An IP address MISP attribute.
@@ -1066,7 +1139,7 @@ An expansion module to query a local copy of Maxmind's Geolite database with an 
 >https://www.maxmind.com/en/home
 
 - **requirements**:
->A local copy of Maxmind's Geolite database
+>A local copy of MaxMind GeoIP2 or GeoLite2 database
 
 -----
 
@@ -1074,16 +1147,26 @@ An expansion module to query a local copy of Maxmind's Geolite database with an 
 
 <img src=logos/maxmind.png height=60>
 
-Query a local copy of Maxminds Geolite database, updated for MMDB format
+Query a local MaxMind GeoIP2 or GeoLite2 Country database (MMDB format)
 [[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/geoip_country.py)]
 
 - **features**:
->This module takes an IP address MISP attribute as input and queries a local copy of the Maxmind's Geolite database to get information about the location of this IP address.
+>This module takes an IP address MISP attribute as input and queries a local copy of the MaxMind GeoIP2 or GeoLite2 database to get information about the location of this IP address.
 >
 >Please note that composite attributes domain|ip are also supported.
 
 - **config**:
->local_geolite_db
+>local_geoip_db, local_geolite_db
+
+Set `local_geoip_db` to the full path of the database on the **misp-modules server** (or inside its container). The service user must have read access to the file. Use an extracted GeoIP2 Country (paid) or GeoLite2 Country `.mmdb` file. Download and extract the database before configuring the module; compressed archives, CSV files, and legacy `.dat` files are not supported.
+
+Existing `local_geolite_db` configurations remain supported, including paths to paid databases. A nonempty `local_geoip_db` takes precedence; if it cannot be loaded, the module returns an error without falling back to another database.
+
+Example query configuration:
+
+```json
+{"config": {"local_geoip_db": "/var/lib/GeoIP/GeoIP2-Country.mmdb"}}
+```
 
 - **input**:
 >An IP address MISP Attribute.
@@ -1095,7 +1178,34 @@ Query a local copy of Maxminds Geolite database, updated for MMDB format
 >https://www.maxmind.com/en/home
 
 - **requirements**:
->A local copy of Maxmind's Geolite database
+>A local copy of MaxMind GeoIP2 or GeoLite2 database
+
+-----
+
+#### [geoPlugin Lookup](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/geoplugin.py)
+
+An expansion and hover module to geolocate an IP address with geoPlugin.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/geoplugin.py)]
+
+- **features**:
+>Queries the geoPlugin HTTPS API using the configured `api_key`. Returns available country, region, city, postal code, coordinates and accuracy radius in a geolocation object linked to the source attribute. Continent and timezone are included as text. Empty fields are omitted. Only public IPv4 addresses are queried, following the API's documented address support. The IP component of domain|ip is used without resolving the domain. See documentation/expansion/geoplugin.md for configuration and an example request.
+
+- **config**:
+>api_key
+
+- **input**:
+>A public IPv4 address in an ip-src, ip-dst or domain|ip attribute.
+
+- **output**:
+>A geolocation object referencing the original attribute. New attributes have to_ids=false.
+
+- **references**:
+> - https://www.geoplugin.com/docs
+> - https://github.com/MISP/misp-modules/issues/438
+
+- **requirements**:
+> - A geoPlugin API key
+> - requests
 
 -----
 
@@ -1231,7 +1341,10 @@ Module to access haveibeenpwned.com API.
 [[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/hibp.py)]
 
 - **features**:
->The module takes an email address as input and queries haveibeenpwned.com API to find additional information about it. This additional information actually tells if any account using the email address has already been compromised in a data breach.
+>The module takes an email address as input and queries haveibeenpwned.com API to find additional information about it. This additional information actually tells if any account using the email address has already been compromised in a data breach, and returns one breach object per breach it appears in. Results are available in hover lookups and can be imported into an event through enrichment.
+
+- **requirements**:
+>A Have I Been Pwned API key with access to the breached account API.
 
 - **config**:
 >api_key
@@ -1240,7 +1353,7 @@ Module to access haveibeenpwned.com API.
 >An email address
 
 - **output**:
->Additional information about the email address.
+>One breach object per data breach the email address appears in.
 
 - **references**:
 >https://haveibeenpwned.com/
@@ -1865,7 +1978,7 @@ Module to push malware samples to a MWDB instance
 [[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/mwdb.py)]
 
 - **features**:
->An expansion module to push malware samples to a MWDB (https://github.com/CERT-Polska/mwdb-core) instance. This module does not push samples to a sandbox. This can be achieved via Karton (connected to the MWDB). Does: * Upload of attachment or malware sample to MWDB * Tags of events and/or attributes are added to MWDB. * Comment of the MISP attribute is added to MWDB. * A link back to the MISP event is added to MWDB via the MWDB attribute.  * A link to the MWDB attribute is added as an enrichted attribute to the MISP event.
+>Uploads an attachment or unpacked MISP malware sample to MWDB using an API key. Optionally forwards event and attribute tags, the attribute comment and the MISP event ID. Returns a link to the uploaded sample. mwdb_url accepts an instance URL or an API URL ending in /api/. Boolean settings accept true/false, yes/no, on/off and 1/0. mwdb_public defaults to true for compatibility; set it to false to use normal instance sharing. See documentation/expansion/mwdb.md for configuration.
 
 - **config**:
 > - mwdb_apikey
@@ -1879,10 +1992,41 @@ Module to push malware samples to a MWDB instance
 >Attachment or malware sample
 
 - **output**:
->Link attribute that points to the sample at the MWDB instane
+>Link attribute pointing to the uploaded MWDB sample
+
+- **references**:
+>https://mwdb.readthedocs.io/en/latest/user-guide/8-REST-and-mwdblib.html
 
 - **requirements**:
->* mwdblib installed (pip install mwdblib) ; * (optional) keys.py file to add tags of events/attributes to MWDB * (optional) MWDB attribute created for the link back to MISP (defined in mwdb_misp_attribute)
+> - mwdblib>=4.0.0 and MWDB Core>=2.6.0
+> - Optional keys.py file for MISP event and attribute tags
+> - Optional MWDB attribute key configured in mwdb_misp_attribute
+
+-----
+
+#### [MWDB Query](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/mwdb_query.py)
+
+Query an MWDB instance for an existing file by hash.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/mwdb_query.py)]
+
+- **features**:
+>Looks up MD5, SHA-1, SHA-256 or SHA-512 using GET /file/{hash} with Bearer authentication. Reuses the MWDB Submit configuration names mwdb_apikey and mwdb_url (the API base URL ending in /api/). Returns a file object, a sample link and an annotation containing MWDB tags, file type and upload time. Tags remain contextual data rather than being applied as MISP tags. No samples are uploaded or downloaded.
+
+- **config**:
+> - mwdb_apikey
+> - mwdb_url
+
+- **input**:
+>md5, sha1, sha256 or sha512 MISP attribute.
+
+- **output**:
+>File metadata, MWDB context and a link to the sample.
+
+- **references**:
+>https://mwdb.readthedocs.io/
+
+- **requirements**:
+>requests
 
 -----
 
@@ -2939,6 +3083,38 @@ Look up an IOC in TweetFeed (tweetfeed.live), the free CC0 feed of URLs, domains
 
 -----
 
+#### [URL Shortener Resolver](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/url_shortener.py)
+
+Resolve known HTTP(S) URL shorteners into a shortened-link object.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/url_shortener.py)]
+
+- **features**:
+>Resolve known shorteners and optional additional_shorteners (comma-separated exact hostnames). Follow at most max_redirects HTTP redirects (default 10, maximum 20), using HEAD with streamed GET fallback on HTTP 405/501. timeout is per request (default 10 seconds, maximum 30); DNS uses the system resolver. Every hop must resolve exclusively to public addresses on ports 80/443. Connections are pinned to a validated address with TLS hostname verification. Return the original attribute and a shortened-link object with the final destination and ordered redirect history. No API key, proxy, browser, JavaScript or HTML redirect processing is used. Generated attributes have to_ids=false.
+
+- **config**:
+> - additional_shorteners
+> - max_redirects
+> - timeout
+
+- **input**:
+>A URL attribute containing type, value and UUID.
+
+- **output**:
+>A shortened-link object referencing the original URL attribute.
+
+- **references**:
+> - https://github.com/MISP/misp-modules/issues/260
+> - https://github.com/MISP/misp-objects/blob/main/objects/shortened-link/definition.json
+
+- **requirements**:
+> - urllib3
+> - certifi
+> - idna
+> - PyMISP
+> - Direct outbound HTTP(S) and DNS access
+
+-----
+
 #### [URLhaus Lookup](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/urlhaus.py)
 
 <img src=logos/urlhaus.png height=60>
@@ -3638,6 +3814,22 @@ Module to export malicious network activity attributes to Cisco fireSIGHT manage
 
 - **requirements**:
 >Firesight manager console credentials
+
+-----
+
+#### [CSV Export](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/csv_export.py)
+
+Export event and object attributes of any type as CSV.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/csv_export.py)]
+
+- **features**:
+>Exports one row per attribute, including object attributes and non-IDS attributes, from every supplied event. Retains event and object context, tags and composite values. Deleted events, objects and attributes are excluded. UTF-8 CSV cells are quoted as needed and formula-like cells are prefixed with an apostrophe for spreadsheet safety. No additional dependencies are required.
+
+- **input**:
+>MISP events in standard, bare or legacy export format.
+
+- **output**:
+>Base64-encoded UTF-8 CSV with a fixed header, including for empty input.
 
 -----
 
@@ -4346,6 +4538,29 @@ Module to import Cuckoo JSON.
 
 -----
 
+#### [DMARC Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/dmarc_import.py)
+
+Import DMARC aggregate XML reports, including gzip and ZIP files.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/dmarc_import.py)]
+
+- **features**:
+>Upload an aggregate XML report (.xml, .xml.gz, or a ZIP containing exactly one XML file), or paste XML. Creates an annotation object with report metadata, published policy and the original XML attachment. Each aggregate record becomes a linked domain-ip object with its source IP (ip-src), header-from domain, reporting interval and a JSON text attribute preserving counts, disposition, SPF/DKIM results, identifiers and extension fields. Additional identifier and authentication domains are included for correlation. All attributes have to_ids disabled: DMARC observations do not by themselves identify malicious senders. No API key or network access is needed. Input and decompressed XML are limited to 20 MiB each, with at most 10,000 records and 32 XML nesting levels. DTDs, encrypted or multi-file ZIPs, nested archives and forensic/failure reports (RUF/ARF) are not supported. Invalid records reject the entire import.
+
+- **input**:
+>DMARC aggregate XML, optionally gzip- or ZIP-compressed
+
+- **output**:
+>MISP annotation and domain-ip objects with report context and authentication results
+
+- **references**:
+> - https://www.rfc-editor.org/rfc/rfc7489.html
+> - https://github.com/MISP/misp-modules/issues/508
+
+- **requirements**:
+>PyMISP
+
+-----
+
 #### [Email Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/email_import.py)
 
 Email import module for MISP
@@ -4353,18 +4568,24 @@ Email import module for MISP
 
 - **features**:
 >This module can be used to import e-mail text as well as attachments and urls.
->3 configuration parameters are then used to unzip attachments, guess zip attachment passwords, and extract urls: set each one of them to True or False to process or not the respective corresponding actions.
+>Configuration parameters are used to unzip attachments, guess zip attachment passwords, extract urls, remove common subject markers, and extract partial inline forwarded emails (extract_forwarded_emails, disabled by default): set each one of them to True or False to process or not the respective corresponding actions.
+>Forward extraction supports English From/To/Cc/Bcc/Reply-To/Sent/Date/Subject header blocks in plain text and HTML, including Outlook. Folded header values are supported. Each block needs a sender address, a subject, and a recipient or date. At most 20 partial email objects are linked to the carrier with includes references. Plain text is preferred; HTML is used if no forwards are found in plain text. Reconstructed attributes have to_ids disabled; the original email is retained as evidence. Local or unparseable timestamps are preserved as text in the reconstructed headers. Existing extract_urls and remove_subject_markers settings also apply to forwards. URL objects are shared between the carrier and forwards that contain the same URL.
 
 - **config**:
 > - unzip_attachments
 > - guess_zip_attachment_passwords
 > - extract_urls
+> - remove_subject_markers
+> - extract_forwarded_emails
 
 - **input**:
 >E-mail file
 
 - **output**:
 >MISP Event attributes
+
+- **references**:
+>https://github.com/MISP/mail_to_misp
 
 -----
 
@@ -4490,20 +4711,20 @@ Optical Character Recognition (OCR) module for MISP.
 
 #### [OpenIOC Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/openiocimport.py)
 
-Module to import OpenIOC packages.
+Import legacy OpenIOC 1.0 and 1.1 files into MISP.
 [[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/openiocimport.py)]
 
 - **features**:
->The module imports MISP Attributes from OpenIOC packages, there is then no special feature for users to make it work.
+>A backup import path for legacy .ioc files after removal of the core OpenIOC importer in MISP 3.0. Upload an OpenIOC 1.0 (ioc/definition) or 1.1 (OpenIOC/criteria) XML file through Import from modules, using openiocimport. Common file, network, email, registry, mutex and service fields become MISP attributes; unmapped fields are retained as other attributes. The original XML is attached by default; the existing not save ioc and default tag options are supported. XML DTDs and custom entities are rejected. This extracts observables, rather than evaluating OpenIOC rules: conditions, negation, case sensitivity, item IDs and the AND/OR group path are recorded in attribute comments. All attributes have to_ids=false for review. Correlation is disabled for grouped AND terms, non-exact or negated conditions and unmapped fields, so these are not treated as independent exact indicators. Keep the attachment for the full rule.
 
 - **input**:
->OpenIOC packages
+>OpenIOC 1.0 or 1.1 XML (.ioc or .xml), including namespace-free legacy files
 
 - **output**:
->MISP Event attributes
+>MISP Event attributes and the optional original IOC attachment
 
 - **references**:
->https://www.fireeye.com/blog/threat-research/2013/10/openioc-basics.html
+>https://github.com/mandiant/ioc_writer
 
 - **requirements**:
 >PyMISP
@@ -4534,6 +4755,33 @@ Simple CSV import tool with mapable columns
 
 - **features**:
 >
+
+-----
+
+#### [PCAP Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/pcap_import.py)
+
+Import a PCAP or PCAPNG capture, including reassembled files, emails and network indicators.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/pcap_import.py)]
+
+- **features**:
+>Parses captures offline with TShark, without capture privileges or network lookups. Extracts IPv4/IPv6 endpoints, DNS names and answers, HTTP URLs, hosts and user agents, and TLS SNI hostnames. Reassembles HTTP files and SMTP messages; reuses email_import for email objects, attachments and body URLs. Requires complete, unencrypted application traffic for payload extraction; HTTPS yields visible TLS metadata only. Other file-transfer protocols and TLS decryption are not supported. Observed network attributes have to_ids disabled for analyst review. Captures are limited to 50 MiB, exported data and JSON metadata to 100 MiB each. timeout is a positive number of seconds, at most 300 (default 60). Output sizes, including diagnostics, are checked every 50 ms while TShark runs; exceeding a limit kills the process. Bursts can overshoot between checks; these checks are not filesystem quotas.
+
+- **config**:
+>timeout
+
+- **input**:
+>Base64-encoded PCAP or PCAPNG file
+
+- **output**:
+>MISP network attributes, file and email objects, including attachments and hashes
+
+- **references**:
+> - https://github.com/MISP/misp-modules/issues/397
+> - https://www.wireshark.org/docs/man-pages/tshark.html
+
+- **requirements**:
+> - TShark >= 4.0 on the service user's PATH (Debian/Ubuntu: apt install tshark)
+> - PyMISP with email and fileobjects extras (included in misp-modules[all])
 
 -----
 
@@ -4639,6 +4887,28 @@ Create and renew module-owned Falcon custom IOCs from MISP event and object attr
 - **requirements**:
 > - crowdstrike-falconpy
 > - Falcon IOC Management Read/Write API scopes
+
+-----
+
+#### [IRC](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/irc.py)
+
+Send a message to an IRC channel.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/irc.py)]
+
+- **features**:
+>Renders Jinja2 templates using matchingData when present, otherwise data, with a JSON fallback. Supports verified TLS, server passwords and channel keys. Splits multiline and long UTF-8 messages into IRC PRIVMSG lines. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/action_mod/irc.md).
+
+- **config**:
+>{'params': {'irc_server': {'type': 'string', 'description': 'IRC server hostname', 'value': 'irc.example.org'}, 'irc_port': {'type': 'string', 'description': 'IRC server port', 'value': '6697'}, 'use_tls': {'type': 'string', 'description': 'true for verified TLS, false for a plaintext connection', 'value': 'true'}, 'nickname': {'type': 'string', 'description': 'Nickname for this connection', 'value': 'misp'}, 'channel': {'type': 'string', 'description': 'IRC channel to join', 'value': '#misp'}, 'server_password': {'type': 'string', 'description': 'Optional server PASS password', 'value': ''}, 'channel_key': {'type': 'string', 'description': 'Optional channel JOIN key', 'value': ''}, 'message_template': {'type': 'large_string', 'description': 'Jinja2 message template; leave empty to send the workflow data as JSON', 'value': 'MISP event: {{ Event.info }}', 'jinja_supported': True}}, 'blocking': False, 'support_filters': True, 'expect_misp_core_format': False}
+
+- **input**:
+>Workflow data or matchingData, and an optional Jinja2 message template.
+
+- **output**:
+>Boolean success after server processing; IRC provides no recipient delivery receipt.
+
+- **references**:
+>https://modern.ircdocs.horse/
 
 -----
 
@@ -4770,6 +5040,32 @@ Publish MISP event and object indicators to SentinelOne Threat Intelligence with
 - **requirements**:
 > - requests
 > - SentinelOne Threat Intelligence.view and Threat Intelligence.manage permissions
+
+-----
+
+#### [Signal](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/signal.py)
+
+Send a message to Signal recipients or a group through signal-cli-rest-api.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/signal.py)]
+
+- **features**:
+>Renders Jinja2 templates using matchingData when present, otherwise data, with a JSON fallback. Sends plain-text messages through POST /v2/send. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/action_mod/signal.md).
+
+- **config**:
+>{'params': {'signal_api_url': {'type': 'string', 'description': 'Base URL of your signal-cli-rest-api service, including any proxy path prefix', 'value': 'http://localhost:8080'}, 'sender_number': {'type': 'string', 'description': 'Registered or linked Signal account number in international format, e.g. +33123456789'}, 'recipients': {'type': 'string', 'description': 'Comma-separated international phone numbers or signal-cli-rest-api group IDs (group.…)'}, 'message_template': {'type': 'large_string', 'description': 'Jinja2 message template; leave empty to send the workflow data as JSON', 'value': 'MISP event: {{ Event.info }}', 'jinja_supported': True}}, 'blocking': False, 'support_filters': True, 'expect_misp_core_format': False}
+
+- **input**:
+>Workflow data or matchingData, and an optional Jinja2 message template.
+
+- **output**:
+>Boolean success; errors indicate an unsuccessful or unacknowledged send.
+
+- **references**:
+>https://github.com/bbernhard/signal-cli-rest-api
+
+- **requirements**:
+> - requests
+> - A configured signal-cli-rest-api service with a registered or linked account
 
 -----
 
