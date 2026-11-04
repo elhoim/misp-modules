@@ -911,6 +911,31 @@ DomainTools MISP expansion module.
 
 -----
 
+#### [DShield SANS ISC](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/dshield.py)
+
+Look up IP reports, target counts, network ownership and threat-feed observations in DShield / SANS ISC.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/dshield.py)]
+
+- **features**:
+>Queries the public ISC IP API without an API key. Set `user_agent` to identify your deployment and include a contact address, as requested by ISC. IPv4 and IPv6 are accepted; private and reserved addresses are rejected. Returns reported packet and unique target counts, first/last seen dates and per-feed observations as a referenced annotation, plus an ASN object and an abuse-contact email when available. Zero reports do not establish that an address is benign. HTTP 429 is returned as an error without automatic retries; wait at least five minutes and respect Retry-After before another lookup. All enrichment has to_ids disabled.
+
+- **config**:
+>user_agent
+
+- **input**:
+>ip-src, ip-dst MISP attribute.
+
+- **output**:
+>A referenced annotation and ASN object, and an abuse-contact email attribute.
+
+- **references**:
+>https://www.dshield.org/api/#ip
+
+- **requirements**:
+>requests
+
+-----
+
 #### [DuckDuckGo Search](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/duckduckgo_search.py)
 
 Search DuckDuckGo for web references to an attribute without an API key.
@@ -2030,6 +2055,34 @@ Query an MWDB instance for an existing file by hash.
 
 -----
 
+#### [NeutrinoAPI IP Blocklist](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/neutrino.py)
+
+Enrich public IP addresses with NeutrinoAPI blocklist categories, detection flags, timestamps and sensor context.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/neutrino.py)]
+
+- **features**:
+>Requires `user_id` and `api_key`, sent in HTTP headers to the IP Blocklist API. Set `vpn_lookup` to true to include public VPN providers (default false). Returns a referenced annotation with the listing status, categories, flags, first/last seen times, counts and sensor details. Missing flags remain unknown; is-vpn is only included when VPN lookup was requested. An unlisted address is not declared benign. All enrichment has to_ids disabled. Supports public IPv4 and IPv6 addresses.
+
+- **config**:
+> - user_id
+> - api_key
+> - vpn_lookup
+
+- **input**:
+>ip-src, ip-dst MISP attribute.
+
+- **output**:
+>A referenced annotation containing IP blocklist intelligence.
+
+- **references**:
+>https://www.neutrinoapi.com/api/ip-blocklist/
+
+- **requirements**:
+> - requests
+> - NeutrinoAPI user ID and API key
+
+-----
+
 #### [OCR Enrich](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/ocr_enrich.py)
 
 Module to process some optical character recognition on pictures.
@@ -2379,6 +2432,33 @@ Module to extract freetext from a .pptx document.
 
 -----
 
+#### [Pulsedive](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/pulsedive.py)
+
+Look up IP, domain and URL risk, linked threats, feeds and DNS observations in Pulsedive.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/pulsedive.py)]
+
+- **features**:
+>Uses the existing indicator lookup API only; never submits an indicator or starts an active scan. `api_key` is optional, with stricter service limits for unauthenticated requests. The API requires the key as a query parameter, so avoid logging request URLs. Returns a referenced annotation containing risk, retirement state, risk factors, timestamps, threats and feed provenance. DNS addresses become domain-ip objects. Other DNS names, IP reverse-DNS PTR names and observed redirects are pivotable attributes. A 404 returns a no-information annotation and does not imply that the indicator is benign. All enrichment has to_ids disabled.
+
+- **config**:
+>api_key
+
+- **input**:
+>ip-src, ip-dst, domain, hostname, url MISP attribute.
+
+- **output**:
+>A referenced annotation, domain-ip objects and related hostname/URL attributes.
+
+- **references**:
+> - https://docs.pulsedive.com/api/indicator/get-by-value
+> - https://docs.pulsedive.com/api/authentication
+
+- **requirements**:
+> - requests
+> - Optional Pulsedive API key
+
+-----
+
 #### [Qintel QSentry Lookup](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/qintel_qsentry.py)
 
 <img src=logos/qintel.png height=60>
@@ -2610,7 +2690,7 @@ Find social media accounts by username with Sherlock.
 [[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/sherlock.py)]
 
 - **features**:
->Runs the Sherlock CLI and returns user-account objects for claimed usernames only. Text is searched as a single literal username, without extracting names or generating variants. Email input uses the local part before @ as a candidate username; matches do not verify email ownership or identity. Install Sherlock for the misp-modules service user and put sherlock on its PATH, or set sherlock_path to the executable's absolute path (not a shell command). Optional sites is a comma-separated list of Sherlock site names; github-username defaults to GitHub only. timeout is the per-site timeout in seconds (default 10); scan_timeout bounds the whole process (default 120). Both must be positive finite numbers. Keep scan_timeout below the MISP enrichment and module-server request timeouts, or raise those timeouts for broad searches. Sherlock contacts the selected sites and downloads its current site definitions. Results can contain false positives and should be reviewed.
+>Runs the Sherlock CLI and returns user-account objects for claimed usernames only. Text is searched as a single literal username, without extracting names or generating variants. Email input uses the local part before @ as a candidate username; matches do not verify email ownership or identity. Install Sherlock for the misp-modules service user and put sherlock on its PATH, or set sherlock_path to the executable's absolute path (not a shell command). Optional sites is a comma-separated list of Sherlock site names; github-username defaults to GitHub only. timeout is the per-site timeout in seconds (default 10); scan_timeout bounds the whole process (default 120). Both must be positive finite numbers. Keep scan_timeout below the MISP enrichment and module-server request timeouts, or raise those timeouts for broad searches. Sherlock contacts the selected sites and downloads its current site definitions. Start misp-modules with --debug to log the command, live CLI output, elapsed time and report summary; this also enables Sherlock's --verbose output. --debug-extended HTTP tracing runs in the server process and cannot trace Sherlock's separate process. For troubleshooting, first limit sites to GitHub. Results can contain false positives and should be reviewed.
 
 - **config**:
 > - sherlock_path
@@ -2630,6 +2710,68 @@ Find social media accounts by username with Sherlock.
 
 - **requirements**:
 >Install the sherlock-project CLI separately (for example: pipx install sherlock-project). No API key required.
+
+**Troubleshooting**
+
+Restart the module server with `--debug` (or keep `--debug-extended`). The
+`misp-modules.sherlock` logger records the exact command, CLI output and a
+"still running" message every five seconds, exit status, elapsed time, and
+report summary. Debug mode also passes `--verbose` to Sherlock and disables
+Python stdout buffering. Each scan has a temporary-directory label to distinguish
+concurrent requests. Output is polled every five seconds and when the process exits;
+each logged chunk is limited to its last 8192 characters. Failed scans include the
+last 2000 characters of CLI output in the module error response. Reports are removed
+after the request, including on failure.
+
+`--debug-extended` instruments HTTP calls inside the module server. Sherlock runs
+in a separate process, so its HTTP exchanges are outside that tracing. For deeper
+inspection, run Sherlock directly with `--verbose`; add `--dump-response` to inspect
+site response bodies.
+
+Start with a single site to distinguish CLI or permission problems from a slow
+full scan. This request uses a five-second per-site timeout, a 40-second whole-scan
+timeout, and a 60-second module-server request timeout:
+
+```bash
+curl --max-time 65 -sS http://127.0.0.1:6666/query \
+  -H 'Content-Type: application/json' \
+  --data-binary '{
+    "module": "sherlock",
+    "timeout": 60,
+    "config": {
+      "sherlock_path": "/home/adulau/.venv/bin/sherlock",
+      "sites": "GitHub",
+      "timeout": "5",
+      "scan_timeout": "40"
+    },
+    "attribute": {
+      "type": "text",
+      "value": "chess",
+      "uuid": "3850286d-e887-5ab4-beae-1c33095b60d0"
+    }
+  }'
+```
+
+The top-level `timeout` bounds the module-server request; `config.timeout` bounds
+each site request. Keep `config.scan_timeout` below both the module-server request
+timeout and MISP's enrichment HTTP timeout. An empty `sites` setting for `text`
+searches all default Sherlock sites, which can exceed those limits. Sherlock also
+makes startup requests for site definitions and update checks.
+
+If it still fails, run the following as the same operating-system user that runs
+misp-modules, so executable permissions, network settings and environment match:
+
+```bash
+/home/adulau/.venv/bin/sherlock --version
+sherlock_debug_dir=$(mktemp -d)
+PYTHONUNBUFFERED=1 /home/adulau/.venv/bin/sherlock \
+  --verbose --csv --print-all --no-color --site GitHub --timeout 5 \
+  --folderoutput "$sherlock_debug_dir" -- chess
+cat "$sherlock_debug_dir/chess.csv"
+```
+
+This keeps the CLI report available for inspection. A nonzero exit, missing CSV,
+or traceback should now be visible directly and in the module diagnostics.
 
 -----
 
@@ -2852,6 +2994,35 @@ Check an IPv4 address against the SpamCop Blocking List (SCBL).
 
 - **requirements**:
 >dnspython
+
+-----
+
+#### [Qualys SSL Labs](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/ssllabs.py)
+
+Retrieve SSL Labs API v4 TLS assessments, endpoint grades and certificate details for a hostname.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/ssllabs.py)]
+
+- **features**:
+>Requires an organization `email` already registered with SSL Labs API v4. No registration is performed by this module. Set `allow_scan` to true before any API request is made. The analyze endpoint can start an assessment even when cached results are requested. Cached reports up to `max_age` hours old (default 24) are preferred; a cache miss can start a scan. Such assessments run on Qualys servers and can take minutes. Each invocation makes one API call and returns progress; run the module again later to retrieve the result. It never forces a restart with startNew and does not publish a report on the public results board. Complete results include endpoint grades, protocols, cipher suites and weakness-test results as contextual annotations, endpoint ip-port objects and x509 certificate objects. Partial or failed endpoints are labelled and are not assigned a successful grade. Numeric test statuses are retained without interpreting unknown/error values as vulnerabilities. All enrichment has to_ids disabled.
+
+- **config**:
+> - email
+> - allow_scan
+> - max_age
+
+- **input**:
+>domain, hostname MISP attribute.
+
+- **output**:
+>Referenced progress/assessment annotations, endpoint ip-port objects and x509 objects.
+
+- **references**:
+> - https://github.com/ssllabs/ssllabs-scan/blob/master/ssllabs-api-docs-v4.md
+> - https://www.ssllabs.com/about/terms.html
+
+- **requirements**:
+> - requests
+> - An email registered with SSL Labs API v4
 
 -----
 
@@ -3371,13 +3542,15 @@ Module to enrich a file or URL with VMware NSX Defender.
 
 <img src=logos/vulndb.png height=60>
 
-Module to query VulnDB (RiskBasedSecurity.com).
+Module to query VulnDB (Flashpoint).
 [[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/vulndb.py)]
 
 - **features**:
 >This module takes a vulnerability attribute as input and queries VulnDB in order to get some additional data about it.
 >
 >The API gives the result of the query which can be displayed in the screen, and/or mapped into MISP attributes to add in the event.
+>
+>Register an OAuth client application in VulnDB under API > Overview. Set apikey to its client ID and apisecret to its client secret. Legacy OAuth 1 consumer credentials must be replaced with OAuth 2.0 client credentials. Authentication uses requests; the legacy oauth2 package is no longer required.
 
 - **config**:
 > - apikey
@@ -3396,10 +3569,10 @@ Module to query VulnDB (RiskBasedSecurity.com).
 >Additional data enriching the CVE input, fetched from VulnDB.
 
 - **references**:
->https://vulndb.cyberriskanalytics.com/
+>https://vulndb.flashpoint.io/
 
 - **requirements**:
->An access to the VulnDB API (apikey, apisecret)
+>VulnDB OAuth 2.0 client credentials (apikey: client ID, apisecret: client secret)
 
 -----
 
@@ -3735,6 +3908,33 @@ Module to process a query on Yeti.
 - **requirements**:
 > - pyeti
 > - API key 
+
+-----
+
+#### [ZoomEye](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/zoomeye.py)
+
+Search ZoomEye API v2 for IP addresses, domains, hostnames and SHA-1 certificate fingerprints.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/zoomeye.py)]
+
+- **features**:
+>Requires `api_key`. Builds an escaped, Base64-encoded search query for API v2 and requests one page of up to `max_results` assets (default 20, maximum 100). Uses the v4/v6 dataset for IPs, web for domains, and all datasets for hostnames and certificate fingerprints. Leading/trailing API key whitespace is removed. A result-limit notice is included when total exceeds the returned records; additional pages are not fetched automatically. Returns referenced ip-port objects with service/banner context, and an annotation retaining result counts and observed metadata. Certificate searches identify assets using an observed certificate, not a malicious verdict. All enrichment has to_ids disabled.
+
+- **config**:
+> - api_key
+> - max_results
+
+- **input**:
+>ip-src, ip-dst, domain, hostname, x509-fingerprint-sha1 MISP attribute.
+
+- **output**:
+>Referenced ip-port objects and an annotation with result count and search coverage.
+
+- **references**:
+>https://github.com/zoomeye-ai/ZoomEye-python/blob/master/api.md
+
+- **requirements**:
+> - requests
+> - ZoomEye API key
 
 -----
 

@@ -44,6 +44,7 @@ For more information: [Extending MISP with Python modules](https://www.misp-proj
 * [DNS Resolver](https://misp.github.io/misp-modules/expansion/#dns-resolver) - Simple DNS expansion service to resolve IP address from MISP attributes
 * [DOCX Enrich](https://misp.github.io/misp-modules/expansion/#docx-enrich) - Module to extract freetext from a .docx document.
 * [DomainTools Lookup](https://misp.github.io/misp-modules/expansion/#domaintools-lookup) - DomainTools MISP expansion module.
+* [DShield SANS ISC](https://misp.github.io/misp-modules/expansion/#dshield-sans-isc) - Look up IP reports, target counts, network ownership and threat-feed observations in DShield / SANS ISC.
 * [DuckDuckGo Search](https://misp.github.io/misp-modules/expansion/#duckduckgo-search) - Search DuckDuckGo for web references to an attribute without an API key.
 * [EQL Query Generator](https://misp.github.io/misp-modules/expansion/#eql-query-generator) - EQL query generation for a MISP attribute.
 * [EUPI Lookup](https://misp.github.io/misp-modules/expansion/#eupi-lookup) - A module to query the Phishing Initiative service (https://phishing-initiative.lu).
@@ -84,6 +85,7 @@ For more information: [Extending MISP with Python modules](https://www.misp-proj
 * [GeoIP Enrichment](https://misp.github.io/misp-modules/expansion/#geoip-enrichment) - A hover and expansion module to enrich an ip with geolocation and ASN information from an mmdb server instance, such as CIRCL's ip.circl.lu.
 * [MWDB Submit](https://misp.github.io/misp-modules/expansion/#mwdb-submit) - Module to push malware samples to a MWDB instance
 * [MWDB Query](https://misp.github.io/misp-modules/expansion/#mwdb-query) - Query an MWDB instance for an existing file by hash.
+* [NeutrinoAPI IP Blocklist](https://misp.github.io/misp-modules/expansion/#neutrinoapi-ip-blocklist) - Enrich public IP addresses with NeutrinoAPI blocklist categories, detection flags, timestamps and sensor context.
 * [OCR Enrich](https://misp.github.io/misp-modules/expansion/#ocr-enrich) - Module to process some optical character recognition on pictures.
 * [ODS Enrich](https://misp.github.io/misp-modules/expansion/#ods-enrich) - Module to extract freetext from a .ods document.
 * [ODT Enrich](https://misp.github.io/misp-modules/expansion/#odt-enrich) - Module to extract freetext from a .odt document.
@@ -96,6 +98,7 @@ For more information: [Extending MISP with Python modules](https://www.misp-proj
 * [PassiveTotal Lookup](https://misp.github.io/misp-modules/expansion/#passivetotal-lookup) - The PassiveTotal MISP expansion module brings the datasets derived from Internet scanning directly into your MISP instance. This module supports passive DNS, historic SSL, WHOIS, and host attributes. In order to use the module, you must have a valid PassiveTotal account username and API key. Registration is free and can be done by visiting https://www.passivetotal.org/register
 * [PDF Enrich](https://misp.github.io/misp-modules/expansion/#pdf-enrich) - Module to extract freetext from a PDF document.
 * [PPTX Enrich](https://misp.github.io/misp-modules/expansion/#pptx-enrich) - Module to extract freetext from a .pptx document.
+* [Pulsedive](https://misp.github.io/misp-modules/expansion/#pulsedive) - Look up IP, domain and URL risk, linked threats, feeds and DNS observations in Pulsedive.
 * [Qintel QSentry Lookup](https://misp.github.io/misp-modules/expansion/#qintel-qsentry-lookup) - A hover and expansion module which queries Qintel QSentry for ip reputation data
 * [QR Code Decode](https://misp.github.io/misp-modules/expansion/#qr-code-decode) - Module to decode QR codes.
 * [RandomcoinDB Lookup](https://misp.github.io/misp-modules/expansion/#randomcoindb-lookup) - Module to access the ransomcoinDB (see https://ransomcoindb.concinnity-risks.com)
@@ -123,6 +126,7 @@ For more information: [Extending MISP with Python modules](https://www.misp-proj
 * [SophosLabs Intelix Lookup](https://misp.github.io/misp-modules/expansion/#sophoslabs-intelix-lookup) - An expansion module to query the Sophoslabs intelix API to get additional information about an ip address, url, domain or sha256 attribute.
 * [URL Archiver](https://misp.github.io/misp-modules/expansion/#url-archiver) - Module to cache web pages of analysis reports, OSINT sources. The module returns a link of the cached page.
 * [SpamCop Lookup](https://misp.github.io/misp-modules/expansion/#spamcop-lookup) - Check an IPv4 address against the SpamCop Blocking List (SCBL).
+* [Qualys SSL Labs](https://misp.github.io/misp-modules/expansion/#qualys-ssl-labs) - Retrieve SSL Labs API v4 TLS assessments, endpoint grades and certificate details for a hostname.
 * [Stairwell Lookup](https://misp.github.io/misp-modules/expansion/#stairwell-lookup) - Module to query the Stairwell API to get additional information about the input hash attribute
 * [STIX2 Pattern Syntax Validator](https://misp.github.io/misp-modules/expansion/#stix2-pattern-syntax-validator) - An expansion hover module to perform a syntax check on stix2 patterns.
 * [ThreatCrowd Lookup](https://misp.github.io/misp-modules/expansion/#threatcrowd-lookup) - Module to get information from ThreatCrowd.
@@ -140,7 +144,7 @@ For more information: [Extending MISP with Python modules](https://www.misp-proj
 * [VirusTotal Upload](https://misp.github.io/misp-modules/expansion/#virustotal-upload) - Module to push malware samples to VirusTotal
 * [VMRay Submit](https://misp.github.io/misp-modules/expansion/#vmray-submit) - Module to submit a sample to VMRay.
 * [VMware NSX Defender Enrich](https://misp.github.io/misp-modules/expansion/#vmware-nsx-defender-enrich) - Module to enrich a file or URL with VMware NSX Defender.
-* [VulnDB Lookup](https://misp.github.io/misp-modules/expansion/#vulndb-lookup) - Module to query VulnDB (RiskBasedSecurity.com).
+* [VulnDB Lookup](https://misp.github.io/misp-modules/expansion/#vulndb-lookup) - Module to query VulnDB (Flashpoint).
 * [Vulnerability Lookup](https://misp.github.io/misp-modules/expansion/#vulnerability-lookup) - An expansion module to query Vulnerability Lookup
 * [Vulners Lookup](https://misp.github.io/misp-modules/expansion/#vulners-lookup) - An expansion hover module to expand information about CVE id using Vulners API.
 * [Vysion Enrich](https://misp.github.io/misp-modules/expansion/#vysion-enrich) - Module to enrich the information by making use of the Vysion API.
@@ -152,6 +156,7 @@ For more information: [Extending MISP with Python modules](https://www.misp-proj
 * [YARA Rule Generator](https://misp.github.io/misp-modules/expansion/#yara-rule-generator) - The module takes a hash attribute (md5, sha1, sha256, imphash) as input, and is returning a YARA rule from it.
 * [YARA Syntax Validator](https://misp.github.io/misp-modules/expansion/#yara-syntax-validator) - An expansion hover module to perform a syntax check on if yara rules are valid or not.
 * [Yeti Lookup](https://misp.github.io/misp-modules/expansion/#yeti-lookup) - Module to process a query on Yeti.
+* [ZoomEye](https://misp.github.io/misp-modules/expansion/#zoomeye) - Search ZoomEye API v2 for IP addresses, domains, hostnames and SHA-1 certificate fingerprints.
 
 ### Export Modules
 * [CEF Export](https://misp.github.io/misp-modules/export_mod/#cef-export) - Module to export a MISP event in CEF format.
