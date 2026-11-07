@@ -106,13 +106,16 @@ For further Information see the [license file](https://misp.github.io/misp-modul
 * [Censys Enrich](https://misp.github.io/misp-modules/expansion/#censys-enrich) - An expansion module to enrich attributes in MISP by quering the censys.io API
 * [CIRCL Passive DNS](https://misp.github.io/misp-modules/expansion/#circl-passive-dns) - Module to access CIRCL Passive DNS.
 * [CIRCL Passive SSL](https://misp.github.io/misp-modules/expansion/#circl-passive-ssl) - Modules to access CIRCL Passive SSL.
+* [Cisco PSIRT](https://misp.github.io/misp-modules/expansion/#cisco-psirt) - Retrieve Cisco PSIRT security advisories by CVE, Cisco advisory ID or Cisco bug ID.
+* [Cisco Umbrella Investigate](https://misp.github.io/misp-modules/expansion/#cisco-umbrella-investigate) - Enrich a domain with Cisco Umbrella Investigate categorization and risk scores.
 * [ClaamAV](https://misp.github.io/misp-modules/expansion/#claamav) - Submit file to ClamAV
 * [Cluster25 Expand](https://misp.github.io/misp-modules/expansion/#cluster25-expand) - Module to query Cluster25 CTI.
 * [Markdown to PDF converter](https://misp.github.io/misp-modules/expansion/#markdown-to-pdf-converter) - Render the markdown (under GFM) into PDF. Requires pandoc (https://pandoc.org/), wkhtmltopdf (https://wkhtmltopdf.org/) and mermaid dependencies.
+* [Cortex XDR IOC Lookup](https://misp.github.io/misp-modules/expansion/#cortex-xdr-ioc-lookup) - Look up exact hash, domain and IP IOC rules in a Cortex XDR tenant.
 * [Country Code](https://misp.github.io/misp-modules/expansion/#country-code) - Module to expand country codes.
 * [CPE Lookup](https://misp.github.io/misp-modules/expansion/#cpe-lookup) - An expansion module to query the CVE search API with a cpe code to get its related vulnerabilities.
 * [CrowdSec CTI](https://misp.github.io/misp-modules/expansion/#crowdsec-cti) - Module to access CrowdSec CTI API.
-* [CrowdStrike Falcon](https://misp.github.io/misp-modules/expansion/#crowdstrike-falcon) - Module to query CrowdStrike Falcon.
+* [CrowdStrike Falcon](https://misp.github.io/misp-modules/expansion/#crowdstrike-falcon) - Query CrowdStrike Falcon Intelligence indicators on demand.
 * [Cuckoo Submit](https://misp.github.io/misp-modules/expansion/#cuckoo-submit) - Submit files and URLs to Cuckoo Sandbox
 * [CVE Lookup](https://misp.github.io/misp-modules/expansion/#cve-lookup) - An expansion hover module to expand information about CVE id.
 * [CVE Advanced Lookup](https://misp.github.io/misp-modules/expansion/#cve-advanced-lookup) - An expansion module to query the CIRCL CVE search API for more information about a vulnerability (CVE).
@@ -164,6 +167,7 @@ For further Information see the [license file](https://misp.github.io/misp-modul
 * [GeoIP Enrichment](https://misp.github.io/misp-modules/expansion/#geoip-enrichment) - A hover and expansion module to enrich an ip with geolocation and ASN information from an mmdb server instance, such as CIRCL's ip.circl.lu.
 * [MWDB Submit](https://misp.github.io/misp-modules/expansion/#mwdb-submit) - Module to push malware samples to a MWDB instance
 * [MWDB Query](https://misp.github.io/misp-modules/expansion/#mwdb-query) - Query an MWDB instance for an existing file by hash.
+* [n8n Data Table Lookup](https://misp.github.io/misp-modules/expansion/#n8n-data-table-lookup) - Find an observable in a selected n8n Data Table string column using the public REST API.
 * [NeutrinoAPI IP Blocklist](https://misp.github.io/misp-modules/expansion/#neutrinoapi-ip-blocklist) - Enrich public IP addresses with NeutrinoAPI blocklist categories, detection flags, timestamps and sensor context.
 * [OCR Enrich](https://misp.github.io/misp-modules/expansion/#ocr-enrich) - Module to process some optical character recognition on pictures.
 * [ODS Enrich](https://misp.github.io/misp-modules/expansion/#ods-enrich) - Module to extract freetext from a .ods document.
@@ -201,6 +205,7 @@ For further Information see the [license file](https://misp.github.io/misp-modul
 * [SecurityTrails Lookup](https://misp.github.io/misp-modules/expansion/#securitytrails-lookup) - An expansion modules for SecurityTrails.
 * [Sherlock Lookup](https://misp.github.io/misp-modules/expansion/#sherlock-lookup) - Find social media accounts by username with Sherlock.
 * [Shodan Lookup](https://misp.github.io/misp-modules/expansion/#shodan-lookup) - Module to query on Shodan.
+* [Shuffle Datastore Lookup](https://misp.github.io/misp-modules/expansion/#shuffle-datastore-lookup) - Look up a MISP observable's key in a selected Shuffle organization and Datastore category.
 * [Sigma Rule Converter](https://misp.github.io/misp-modules/expansion/#sigma-rule-converter) - An expansion hover module to display the result of sigma queries.
 * [Sigma Syntax Validator](https://misp.github.io/misp-modules/expansion/#sigma-syntax-validator) - An expansion hover module to perform a syntax check on sigma rules.
 * [SigMF Expansion](https://misp.github.io/misp-modules/expansion/#sigmf-expansion) - Expands a SigMF Recording object into a SigMF Expanded Recording object, extracts a SigMF archive into a SigMF Recording object.
@@ -215,6 +220,8 @@ For further Information see the [license file](https://misp.github.io/misp-modul
 * [ThreatCrowd Lookup](https://misp.github.io/misp-modules/expansion/#threatcrowd-lookup) - Module to get information from ThreatCrowd.
 * [ThreadFox Lookup](https://misp.github.io/misp-modules/expansion/#threadfox-lookup) - Module to search for an IOC on ThreatFox by abuse.ch.
 * [ThreatMiner Lookup](https://misp.github.io/misp-modules/expansion/#threatminer-lookup) - Module to get information from ThreatMiner.
+* [Tines Record Lookup](https://misp.github.io/misp-modules/expansion/#tines-record-lookup) - Find a MISP observable in a selected Tines record type and field using Records v2 search.
+* [Torq Observable Lookup](https://misp.github.io/misp-modules/expansion/#torq-observable-lookup) - Look up a MISP observable in Torq and return verified matches with reputation and threat intelligence.
 * [Triage Submit](https://misp.github.io/misp-modules/expansion/#triage-submit) - Module to submit samples to tria.ge
 * [TruSTAR Enrich](https://misp.github.io/misp-modules/expansion/#trustar-enrich) - Module to get enrich indicators with TruSTAR.
 * [TweetFeed Lookup](https://misp.github.io/misp-modules/expansion/#tweetfeed-lookup) - Look up an IOC in TweetFeed, the CC0 feed of IOCs shared by the infosec community on X/Twitter: reporters, source tweets, hashtags, AI context and campaign membership.
@@ -265,6 +272,7 @@ For further Information see the [license file](https://misp.github.io/misp-modul
 * [Event to PDF Export](https://misp.github.io/misp-modules/export_mod/#event-to-pdf-export) - Simple export of a MISP event to PDF.
 * [OpenBSD PF Export](https://misp.github.io/misp-modules/export_mod/#openbsd-pf-export) - Export IDS-marked event and object network attributes as OpenBSD PF block or logging rules.
 * [QRadar Reference Set Export](https://misp.github.io/misp-modules/export_mod/#qradar-reference-set-export) - Export deduplicated, typed MISP indicators as QRadar reference-set CSV or JSON values.
+* [Sigma Rule Export](https://misp.github.io/misp-modules/export_mod/#sigma-rule-export) - Export stored Sigma rules and optionally generate Windows IOC detections.
 * [Splunk Lookup Export](https://misp.github.io/misp-modules/export_mod/#splunk-lookup-export) - Export event and object indicators as a Splunk CSV lookup with CIM field mapping hints.
 * [Squid Proxy Export](https://misp.github.io/misp-modules/export_mod/#squid-proxy-export) - Export IDS-marked event and object attributes as Squid proxy ACLs and deny rules.
 * [Test Export](https://misp.github.io/misp-modules/export_mod/#test-export) - Skeleton export module.
@@ -279,7 +287,7 @@ For further Information see the [license file](https://misp.github.io/misp-modul
 ### Import Modules
 * [ANYRUN Sandbox Import](https://misp.github.io/misp-modules/import_mod/#anyrun-sandbox-import) - A module designed to retrieve an analysis report from the ANY.RUN Sandbox by its unique ID and extract results (such as verdict, malware tags, and IOCs), converting them into MISP attributes within your event.
 * [PDNS COF Importer](https://misp.github.io/misp-modules/import_mod/#pdns-cof-importer) - Passive DNS Common Output Format (COF) MISP importer
-* [CSV Import](https://misp.github.io/misp-modules/import_mod/#csv-import) - Module to import MISP attributes from a csv file.
+* [CSV Import](https://misp.github.io/misp-modules/import_mod/#csv-import) - Import MISP attributes from base64-encoded UTF-8 CSV contents.
 * [Cuckoo Sandbox Import](https://misp.github.io/misp-modules/import_mod/#cuckoo-sandbox-import) - Module to import Cuckoo JSON.
 * [DMARC Import](https://misp.github.io/misp-modules/import_mod/#dmarc-import) - Import DMARC aggregate XML reports, including gzip and ZIP files.
 * [Email Import](https://misp.github.io/misp-modules/import_mod/#email-import) - Email import module for MISP
@@ -299,18 +307,23 @@ For further Information see the [license file](https://misp.github.io/misp-modul
 * [VMRay Summary JSON Import](https://misp.github.io/misp-modules/import_mod/#vmray-summary-json-import) - Import a VMRay Summary JSON report.
 
 ### Action Modules
+* [Cortex XDR IOC Publish](https://misp.github.io/misp-modules/action_mod/#cortex-xdr-ioc-publish) - Upload missing Cortex XDR IOC rules from IDS-marked MISP event and object attributes.
 * [CrowdStrike IOC Publish](https://misp.github.io/misp-modules/action_mod/#crowdstrike-ioc-publish) - Create and renew module-owned Falcon custom IOCs from MISP event and object attributes.
 * [Export to Sentinel or Defender](https://misp.github.io/misp-modules/action_mod/#export-to-sentinel-or-defender) - Export indicators to Microsoft Sentinel or Microsoft Defender. Requires an existing installation of MISP2Sentinel or MISP2Defender.
 * [IRC](https://misp.github.io/misp-modules/action_mod/#irc) - Send a message to an IRC channel.
 * [Matrix](https://misp.github.io/misp-modules/action_mod/#matrix) - Send a message to an unencrypted Matrix room.
 * [Mattermost](https://misp.github.io/misp-modules/action_mod/#mattermost) - Simplistic module to send message to a Mattermost channel.
+* [n8n Webhook](https://misp.github.io/misp-modules/action_mod/#n8n-webhook) - Send selected MISP event attributes to an authenticated n8n Webhook trigger.
 * [Nextcloud talk](https://misp.github.io/misp-modules/action_mod/#nextcloud-talk) - Simplistic module to send a message to a Nextcloud talk conversation.
 * [OSQuery Pack Publish](https://misp.github.io/misp-modules/action_mod/#osquery-pack-publish) - Publish a MISP query pack to a configured local osquery pack directory.
 * [QRadar Reference Set Publish](https://misp.github.io/misp-modules/action_mod/#qradar-reference-set-publish) - Publish typed MISP indicators to an existing QRadar reference set and explicit domain.
 * [SentinelOne IOC Publish](https://misp.github.io/misp-modules/action_mod/#sentinelone-ioc-publish) - Publish MISP event and object indicators to SentinelOne Threat Intelligence with explicit scope.
+* [Shuffle Workflow Execute](https://misp.github.io/misp-modules/action_mod/#shuffle-workflow-execute) - Start a Shuffle workflow with selected MISP event and object attributes as its JSON execution argument.
 * [Signal](https://misp.github.io/misp-modules/action_mod/#signal) - Send a message to Signal recipients or a group through signal-cli-rest-api.
 * [Slack](https://misp.github.io/misp-modules/action_mod/#slack) - Simplistic module to send messages to a Slack channel.
 * [Test action](https://misp.github.io/misp-modules/action_mod/#test-action) - This module is merely a test, always returning true. Triggers on event publishing.
+* [Tines Case Create](https://misp.github.io/misp-modules/action_mod/#tines-case-create) - Create a Tines Cases v2 case with a MISP event reference and selected-data counts.
+* [Torq Case Create](https://misp.github.io/misp-modules/action_mod/#torq-case-create) - Create a Torq case with a MISP event reference, provenance tags and selected-data counts.
 * [Wazuh CDB Publish](https://misp.github.io/misp-modules/action_mod/#wazuh-cdb-publish) - Upload MISP event and object indicators to an explicitly named Wazuh CDB source list.
 
 

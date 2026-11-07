@@ -431,6 +431,70 @@ Modules to access CIRCL Passive SSL.
 
 -----
 
+#### [Cisco PSIRT](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/cisco_psirt.py)
+
+Retrieve Cisco PSIRT security advisories by CVE, Cisco advisory ID or Cisco bug ID.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/cisco_psirt.py)]
+
+- **features**:
+>Uses OAuth client credentials and the openVuln v2 API. Returns linked vulnerability and annotation objects with advisory details, CVEs, CVSS, UTC dates, product names, bug IDs, CWEs and CSAF links. Filters partial bug-ID matches. See https://github.com/MISP/misp-modules/blob/main/documentation/expansion/cisco_psirt.md.
+
+- **config**:
+> - client_id
+> - client_secret
+> - max_advisories
+> - timeout
+
+- **data-source**:
+>external
+
+- **input**:
+>A vulnerability attribute containing a CVE, or a text attribute containing a CVE, cisco-sa-* or CSCxx12345 ID.
+
+- **output**:
+>The original attribute, advisory vulnerability objects and referenced context annotations; new attributes are non-IDS.
+
+- **references**:
+> - https://developer.cisco.com/docs/psirt/introduction/
+> - https://developer.cisco.com/docs/psirt/authentication/
+> - https://developer.cisco.com/docs/psirt/obtain-advisory-by-identifiers/
+
+- **requirements**:
+>Cisco API Console client credentials authorized for the PSIRT openVuln API.
+
+-----
+
+#### [Cisco Umbrella Investigate](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/cisco_umbrella.py)
+
+Enrich a domain with Cisco Umbrella Investigate categorization and risk scores.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/cisco_umbrella.py)]
+
+- **features**:
+>Uses the Umbrella v2 OAuth client credentials flow. Returns a referenced annotation with domain status, security/content categories, risk score and contributing features. Partial results identify failed lookups. See https://github.com/MISP/misp-modules/blob/main/documentation/expansion/cisco_umbrella.md.
+
+- **config**:
+> - api_key
+> - api_secret
+> - timeout
+
+- **data-source**:
+>external
+
+- **input**:
+>A domain or hostname attribute with a UUID and a fully qualified DNS name.
+
+- **output**:
+>The original attribute and a non-IDS annotation containing the Umbrella report.
+
+- **references**:
+> - https://developer.cisco.com/docs/cloud-security/umbrella-api-getting-started/
+> - https://developer.cisco.com/docs/cloud-security/umbrella-api-reference-investigate-api-overview/
+
+- **requirements**:
+>An Umbrella Investigate entitlement and an API key with investigate.investigate:read access.
+
+-----
+
 #### [ClaamAV](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/clamav.py)
 
 Submit file to ClamAV
@@ -514,6 +578,40 @@ Render the markdown (under GFM) into PDF. Requires pandoc (https://pandoc.org/),
 
 - **requirements**:
 >pandoc
+
+-----
+
+#### [Cortex XDR IOC Lookup](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/cortex_xdr_ioc_lookup.py)
+
+Look up exact hash, domain and IP IOC rules in a Cortex XDR tenant.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/cortex_xdr_ioc_lookup.py)]
+
+- **features**:
+>Queries indicators/get with indicator and type filters. Supports Standard and Advanced API keys, IDNA2008 domain normalization and bounded results. Returns a referenced annotation without modifying Cortex XDR. IOC rule presence is not evidence of an endpoint detection. See https://github.com/MISP/misp-modules/blob/main/documentation/expansion/cortex_xdr_ioc_lookup.md.
+
+- **config**:
+> - url
+> - api_key
+> - api_key_id
+> - auth_type
+> - limit
+> - timeout
+
+- **data-source**:
+>external
+
+- **input**:
+>md5, sha256, domain, hostname, ip-src or ip-dst attribute with UUID.
+
+- **output**:
+>Original attribute and a non-IDS annotation of matching IOC rules and completeness.
+
+- **references**:
+> - https://cortex-docs.paloaltonetworks.com/xdr-api/make-your-first-api-call
+> - https://cortex-docs.paloaltonetworks.com/xdr-api/cortex-platform/iocs
+
+- **requirements**:
+>A Cortex XDR API key with Rules Edit permission, as required by the IOC lookup endpoint.
 
 -----
 
@@ -603,13 +701,11 @@ Module to access CrowdSec CTI API.
 
 <img src=../logos/crowdstrike.png height=60>
 
-Module to query CrowdStrike Falcon.
+Query CrowdStrike Falcon Intelligence indicators on demand.
 [[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/crowdstrike_falcon.py)]
 
 - **features**:
->This module takes a MISP attribute as input to query a CrowdStrike Falcon API. The API returns then the result of the query with some types we map into compatible types we add as MISP attributes.
->
->Please note that composite attributes composed by at least one of the input types mentionned below (domains, IPs, hostnames) are also supported.
+>Run enrichment or hover on a supported attribute to query Falcon Intelligence and return related indicators and threat metadata. Set api_id to the OAuth2 client ID and apikey to the client secret. Publishing a MISP event does not run this lookup or create CrowdStrike sightings. See the [setup and verification guide](https://github.com/MISP/misp-modules/blob/main/documentation/expansion/crowdstrike_falcon.md).
 
 - **config**:
 > - api_id
@@ -656,10 +752,10 @@ Module to query CrowdStrike Falcon.
 >- x509-fingerprint-md5
 
 - **references**:
->https://www.crowdstrike.com/products/crowdstrike-falcon-faq/
+>https://www.falconpy.io/Service-Collections/Intel.html
 
 - **requirements**:
->A CrowdStrike API access (API id & key)
+>A Falcon OAuth2 API client with the Intel: Read scope and access to Falcon Intelligence
 
 -----
 
@@ -2051,6 +2147,41 @@ Query an MWDB instance for an existing file by hash.
 
 -----
 
+#### [n8n Data Table Lookup](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/n8n_data_table_lookup.py)
+
+Find an observable in a selected n8n Data Table string column using the public REST API.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/n8n_data_table_lookup.py)]
+
+- **features**:
+>Validates the configured column and queries one bounded row page with a literal equality filter. Preserves the source attribute and attaches matched rows in a referenced non-IDS annotation. Reports cursor truncation without following provider links or running any workflow. See https://github.com/MISP/misp-modules/blob/main/documentation/expansion/n8n_data_table_lookup.md.
+
+- **config**:
+> - url
+> - api_key
+> - data_table_id
+> - column
+> - limit
+> - timeout
+
+- **data-source**:
+>external
+
+- **input**:
+>A supported observable or text attribute with a UUID and non-empty string value.
+
+- **output**:
+>Original attribute and a non-IDS annotation with matching Data Table rows and completeness.
+
+- **references**:
+> - https://docs.n8n.io/connect/n8n-api
+> - https://docs.n8n.io/connect/n8n-api/authentication
+> - https://docs.n8n.io/connect/n8n-api/data-table
+
+- **requirements**:
+>n8n public API with Data Tables endpoints; dataTableColumn:read and dataTableRow:read access.
+
+-----
+
 #### [NeutrinoAPI IP Blocklist](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/neutrino.py)
 
 Enrich public IP addresses with NeutrinoAPI blocklist categories, detection flags, timestamps and sensor context.
@@ -3082,6 +3213,40 @@ Module to query on Shodan.
 
 -----
 
+#### [Shuffle Datastore Lookup](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/shuffle_datastore_lookup.py)
+
+Look up a MISP observable's key in a selected Shuffle organization and Datastore category.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/shuffle_datastore_lookup.py)]
+
+- **features**:
+>Uses the read-only get_cache API, validates returned key/category identity and preserves native record values. Returns a referenced non-IDS annotation with only selected metadata, excluding Datastore authorization tokens. Missing/inaccessible keys are errors, not benign verdicts. See https://github.com/MISP/misp-modules/blob/main/documentation/expansion/shuffle_datastore_lookup.md.
+
+- **config**:
+> - url
+> - api_key
+> - org_id
+> - category
+> - key_prefix
+> - timeout
+
+- **data-source**:
+>external
+
+- **input**:
+>A supported observable or text attribute with a UUID and a literal Datastore key value.
+
+- **output**:
+>Original attribute and referenced annotation with the Datastore value and selected metadata.
+
+- **references**:
+> - https://shuffler.io/docs/API
+> - https://github.com/Shuffle/shuffle-docs/blob/master/docs/API.md#get-a-key
+
+- **requirements**:
+>Shuffle API key with read access to the selected organization, Datastore category and key.
+
+-----
+
 #### [Sigma Rule Converter](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/sigma_queries.py)
 
 <img src=../logos/sigma.png height=60>
@@ -3456,6 +3621,76 @@ Module to get information from ThreatMiner.
 
 - **references**:
 >https://www.threatminer.org/
+
+-----
+
+#### [Tines Record Lookup](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/tines_record_lookup.py)
+
+Find a MISP observable in a selected Tines record type and field using Records v2 search.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/tines_record_lookup.py)]
+
+- **features**:
+>Uses a literal EQUAL filter against an explicit numeric field ID. Queries the read-only Records v2 search API, preserves source attributes and returns a referenced annotation with records and completeness. Artifact handles and pagination links are not fetched. See https://github.com/MISP/misp-modules/blob/main/documentation/expansion/tines_record_lookup.md.
+
+- **config**:
+> - url
+> - api_key
+> - record_type_id
+> - field_id
+> - limit
+> - test_mode
+> - timeout
+
+- **data-source**:
+>external
+
+- **input**:
+>A supported observable or text attribute with a UUID and a non-empty string value.
+
+- **output**:
+>Original attribute and a non-IDS annotation of Tines record matches and pagination completeness.
+
+- **references**:
+> - https://www.tines.com/stories/docs/api/authentication/
+> - https://www.tines.com/stories/docs/api/records/search/
+
+- **requirements**:
+>Tines API access to the selected record type and its search field.
+
+-----
+
+#### [Torq Observable Lookup](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/torq_observable_lookup.py)
+
+Look up a MISP observable in Torq and return verified matches with reputation and threat intelligence.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/torq_observable_lookup.py)]
+
+- **features**:
+>Uses the read-only observable query API and verifies typed values locally because search may be broader than equality. Returns a referenced non-IDS annotation with reputation, enrichment and completeness. Supports regional API bases, OAuth client credentials and existing bearer tokens. See https://github.com/MISP/misp-modules/blob/main/documentation/expansion/torq_observable_lookup.md.
+
+- **config**:
+> - region
+> - client_id
+> - client_secret
+> - access_token
+> - limit
+> - timeout
+
+- **data-source**:
+>external
+
+- **input**:
+>Domain/hostname, IP, MD5/SHA1/SHA256, URL, email or filename attribute with a valid UUID.
+
+- **output**:
+>Original attribute and referenced annotation with exact typed matches and search completeness.
+
+- **references**:
+> - https://developers.torq.io/apidocs/overview
+> - https://developers.torq.io/apidocs/authentication
+> - https://developers.torq.io/apidocs/query-observables
+
+- **requirements**:
+>Torq API credentials for the workspace with permission to query observables.
 
 -----
 

@@ -434,6 +434,70 @@ Modules to access CIRCL Passive SSL.
 
 -----
 
+#### [Cisco PSIRT](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/cisco_psirt.py)
+
+Retrieve Cisco PSIRT security advisories by CVE, Cisco advisory ID or Cisco bug ID.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/cisco_psirt.py)]
+
+- **features**:
+>Uses OAuth client credentials and the openVuln v2 API. Returns linked vulnerability and annotation objects with advisory details, CVEs, CVSS, UTC dates, product names, bug IDs, CWEs and CSAF links. Filters partial bug-ID matches. See https://github.com/MISP/misp-modules/blob/main/documentation/expansion/cisco_psirt.md.
+
+- **config**:
+> - client_id
+> - client_secret
+> - max_advisories
+> - timeout
+
+- **data-source**:
+>external
+
+- **input**:
+>A vulnerability attribute containing a CVE, or a text attribute containing a CVE, cisco-sa-* or CSCxx12345 ID.
+
+- **output**:
+>The original attribute, advisory vulnerability objects and referenced context annotations; new attributes are non-IDS.
+
+- **references**:
+> - https://developer.cisco.com/docs/psirt/introduction/
+> - https://developer.cisco.com/docs/psirt/authentication/
+> - https://developer.cisco.com/docs/psirt/obtain-advisory-by-identifiers/
+
+- **requirements**:
+>Cisco API Console client credentials authorized for the PSIRT openVuln API.
+
+-----
+
+#### [Cisco Umbrella Investigate](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/cisco_umbrella.py)
+
+Enrich a domain with Cisco Umbrella Investigate categorization and risk scores.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/cisco_umbrella.py)]
+
+- **features**:
+>Uses the Umbrella v2 OAuth client credentials flow. Returns a referenced annotation with domain status, security/content categories, risk score and contributing features. Partial results identify failed lookups. See https://github.com/MISP/misp-modules/blob/main/documentation/expansion/cisco_umbrella.md.
+
+- **config**:
+> - api_key
+> - api_secret
+> - timeout
+
+- **data-source**:
+>external
+
+- **input**:
+>A domain or hostname attribute with a UUID and a fully qualified DNS name.
+
+- **output**:
+>The original attribute and a non-IDS annotation containing the Umbrella report.
+
+- **references**:
+> - https://developer.cisco.com/docs/cloud-security/umbrella-api-getting-started/
+> - https://developer.cisco.com/docs/cloud-security/umbrella-api-reference-investigate-api-overview/
+
+- **requirements**:
+>An Umbrella Investigate entitlement and an API key with investigate.investigate:read access.
+
+-----
+
 #### [ClaamAV](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/clamav.py)
 
 Submit file to ClamAV
@@ -517,6 +581,40 @@ Render the markdown (under GFM) into PDF. Requires pandoc (https://pandoc.org/),
 
 - **requirements**:
 >pandoc
+
+-----
+
+#### [Cortex XDR IOC Lookup](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/cortex_xdr_ioc_lookup.py)
+
+Look up exact hash, domain and IP IOC rules in a Cortex XDR tenant.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/cortex_xdr_ioc_lookup.py)]
+
+- **features**:
+>Queries indicators/get with indicator and type filters. Supports Standard and Advanced API keys, IDNA2008 domain normalization and bounded results. Returns a referenced annotation without modifying Cortex XDR. IOC rule presence is not evidence of an endpoint detection. See https://github.com/MISP/misp-modules/blob/main/documentation/expansion/cortex_xdr_ioc_lookup.md.
+
+- **config**:
+> - url
+> - api_key
+> - api_key_id
+> - auth_type
+> - limit
+> - timeout
+
+- **data-source**:
+>external
+
+- **input**:
+>md5, sha256, domain, hostname, ip-src or ip-dst attribute with UUID.
+
+- **output**:
+>Original attribute and a non-IDS annotation of matching IOC rules and completeness.
+
+- **references**:
+> - https://cortex-docs.paloaltonetworks.com/xdr-api/make-your-first-api-call
+> - https://cortex-docs.paloaltonetworks.com/xdr-api/cortex-platform/iocs
+
+- **requirements**:
+>A Cortex XDR API key with Rules Edit permission, as required by the IOC lookup endpoint.
 
 -----
 
@@ -606,13 +704,11 @@ Module to access CrowdSec CTI API.
 
 <img src=logos/crowdstrike.png height=60>
 
-Module to query CrowdStrike Falcon.
+Query CrowdStrike Falcon Intelligence indicators on demand.
 [[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/crowdstrike_falcon.py)]
 
 - **features**:
->This module takes a MISP attribute as input to query a CrowdStrike Falcon API. The API returns then the result of the query with some types we map into compatible types we add as MISP attributes.
->
->Please note that composite attributes composed by at least one of the input types mentionned below (domains, IPs, hostnames) are also supported.
+>Run enrichment or hover on a supported attribute to query Falcon Intelligence and return related indicators and threat metadata. Set api_id to the OAuth2 client ID and apikey to the client secret. Publishing a MISP event does not run this lookup or create CrowdStrike sightings. See the [setup and verification guide](https://github.com/MISP/misp-modules/blob/main/documentation/expansion/crowdstrike_falcon.md).
 
 - **config**:
 > - api_id
@@ -659,10 +755,10 @@ Module to query CrowdStrike Falcon.
 >- x509-fingerprint-md5
 
 - **references**:
->https://www.crowdstrike.com/products/crowdstrike-falcon-faq/
+>https://www.falconpy.io/Service-Collections/Intel.html
 
 - **requirements**:
->A CrowdStrike API access (API id & key)
+>A Falcon OAuth2 API client with the Intel: Read scope and access to Falcon Intelligence
 
 -----
 
@@ -2055,6 +2151,41 @@ Query an MWDB instance for an existing file by hash.
 
 -----
 
+#### [n8n Data Table Lookup](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/n8n_data_table_lookup.py)
+
+Find an observable in a selected n8n Data Table string column using the public REST API.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/n8n_data_table_lookup.py)]
+
+- **features**:
+>Validates the configured column and queries one bounded row page with a literal equality filter. Preserves the source attribute and attaches matched rows in a referenced non-IDS annotation. Reports cursor truncation without following provider links or running any workflow. See https://github.com/MISP/misp-modules/blob/main/documentation/expansion/n8n_data_table_lookup.md.
+
+- **config**:
+> - url
+> - api_key
+> - data_table_id
+> - column
+> - limit
+> - timeout
+
+- **data-source**:
+>external
+
+- **input**:
+>A supported observable or text attribute with a UUID and non-empty string value.
+
+- **output**:
+>Original attribute and a non-IDS annotation with matching Data Table rows and completeness.
+
+- **references**:
+> - https://docs.n8n.io/connect/n8n-api
+> - https://docs.n8n.io/connect/n8n-api/authentication
+> - https://docs.n8n.io/connect/n8n-api/data-table
+
+- **requirements**:
+>n8n public API with Data Tables endpoints; dataTableColumn:read and dataTableRow:read access.
+
+-----
+
 #### [NeutrinoAPI IP Blocklist](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/neutrino.py)
 
 Enrich public IP addresses with NeutrinoAPI blocklist categories, detection flags, timestamps and sensor context.
@@ -2803,6 +2934,40 @@ Module to query on Shodan.
 
 -----
 
+#### [Shuffle Datastore Lookup](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/shuffle_datastore_lookup.py)
+
+Look up a MISP observable's key in a selected Shuffle organization and Datastore category.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/shuffle_datastore_lookup.py)]
+
+- **features**:
+>Uses the read-only get_cache API, validates returned key/category identity and preserves native record values. Returns a referenced non-IDS annotation with only selected metadata, excluding Datastore authorization tokens. Missing/inaccessible keys are errors, not benign verdicts. See https://github.com/MISP/misp-modules/blob/main/documentation/expansion/shuffle_datastore_lookup.md.
+
+- **config**:
+> - url
+> - api_key
+> - org_id
+> - category
+> - key_prefix
+> - timeout
+
+- **data-source**:
+>external
+
+- **input**:
+>A supported observable or text attribute with a UUID and a literal Datastore key value.
+
+- **output**:
+>Original attribute and referenced annotation with the Datastore value and selected metadata.
+
+- **references**:
+> - https://shuffler.io/docs/API
+> - https://github.com/Shuffle/shuffle-docs/blob/master/docs/API.md#get-a-key
+
+- **requirements**:
+>Shuffle API key with read access to the selected organization, Datastore category and key.
+
+-----
+
 #### [Sigma Rule Converter](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/sigma_queries.py)
 
 <img src=logos/sigma.png height=60>
@@ -3177,6 +3342,76 @@ Module to get information from ThreatMiner.
 
 - **references**:
 >https://www.threatminer.org/
+
+-----
+
+#### [Tines Record Lookup](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/tines_record_lookup.py)
+
+Find a MISP observable in a selected Tines record type and field using Records v2 search.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/tines_record_lookup.py)]
+
+- **features**:
+>Uses a literal EQUAL filter against an explicit numeric field ID. Queries the read-only Records v2 search API, preserves source attributes and returns a referenced annotation with records and completeness. Artifact handles and pagination links are not fetched. See https://github.com/MISP/misp-modules/blob/main/documentation/expansion/tines_record_lookup.md.
+
+- **config**:
+> - url
+> - api_key
+> - record_type_id
+> - field_id
+> - limit
+> - test_mode
+> - timeout
+
+- **data-source**:
+>external
+
+- **input**:
+>A supported observable or text attribute with a UUID and a non-empty string value.
+
+- **output**:
+>Original attribute and a non-IDS annotation of Tines record matches and pagination completeness.
+
+- **references**:
+> - https://www.tines.com/stories/docs/api/authentication/
+> - https://www.tines.com/stories/docs/api/records/search/
+
+- **requirements**:
+>Tines API access to the selected record type and its search field.
+
+-----
+
+#### [Torq Observable Lookup](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/torq_observable_lookup.py)
+
+Look up a MISP observable in Torq and return verified matches with reputation and threat intelligence.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/torq_observable_lookup.py)]
+
+- **features**:
+>Uses the read-only observable query API and verifies typed values locally because search may be broader than equality. Returns a referenced non-IDS annotation with reputation, enrichment and completeness. Supports regional API bases, OAuth client credentials and existing bearer tokens. See https://github.com/MISP/misp-modules/blob/main/documentation/expansion/torq_observable_lookup.md.
+
+- **config**:
+> - region
+> - client_id
+> - client_secret
+> - access_token
+> - limit
+> - timeout
+
+- **data-source**:
+>external
+
+- **input**:
+>Domain/hostname, IP, MD5/SHA1/SHA256, URL, email or filename attribute with a valid UUID.
+
+- **output**:
+>Original attribute and referenced annotation with exact typed matches and search completeness.
+
+- **references**:
+> - https://developers.torq.io/apidocs/overview
+> - https://developers.torq.io/apidocs/authentication
+> - https://developers.torq.io/apidocs/query-observables
+
+- **requirements**:
+>Torq API credentials for the workspace with permission to query observables.
 
 -----
 
@@ -4389,6 +4624,35 @@ Export deduplicated, typed MISP indicators as QRadar reference-set CSV or JSON v
 
 -----
 
+#### [Sigma Rule Export](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/sigma_export.py)
+
+<img src=logos/sigma.png height=60>
+
+Export stored Sigma rules and optionally generate Windows IOC detections.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/sigma_export.py)]
+
+- **features**:
+>Produces a ZIP of Sigma YAML files and a provenance manifest. The default rules mode preserves stored Sigma attributes, including those in objects. Select indicators or both to generate experimental Windows process_creation, dns_query and network_connection rules from supported IDS-marked indicators. Deleted data is excluded; duplicate rules are combined with all source references. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/export_mod/sigma_export.md).
+
+- **config**:
+> - mode
+> - include_non_ids
+
+- **input**:
+>MISP events and object attributes in standard, bare or legacy export format.
+
+- **output**:
+>Base64-encoded ZIP containing rules/*.yml and manifest.json.
+
+- **references**:
+> - https://sigmahq.io/
+> - https://github.com/SigmaHQ/sigma-specification
+
+- **requirements**:
+>PyYAML
+
+-----
+
 #### [Splunk Lookup Export](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/splunk_export.py)
 
 Export event and object indicators as a Splunk CSV lookup with CIM field mapping hints.
@@ -4691,7 +4955,7 @@ Passive DNS Common Output Format (COF) MISP importer
 
 #### [CSV Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/csvimport.py)
 
-Module to import MISP attributes from a csv file.
+Import MISP attributes from base64-encoded UTF-8 CSV contents.
 [[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/csvimport.py)]
 
 - **features**:
@@ -4700,9 +4964,11 @@ Module to import MISP attributes from a csv file.
 >This header either comes from the csv file itself or is part of the configuration of the module and should be filled out in MISP plugin settings, each field separated by COMMAS. Fields that do not match with any type known in MISP or are not MISP attribute fields should be ignored in import, using a space or simply nothing between two separators (example: 'ip-src, , comment, ').
 >
 >If the csv file already contains a header that does not start by a '#', you should tick the checkbox 'has_header' to avoid importing it and have potential issues. You can also redefine the header even if it is already contained in the file, by following the rules for headers explained earlier. One reason why you would redefine a header is for instance when you want to skip some fields, or some fields are not valid types.
+>
+>For REST API requests, put the base64-encoded UTF-8 CSV contents in data; file is not a server-side path to read. See the [REST API guide](https://github.com/MISP/misp-modules/blob/main/documentation/import_mod/csvimport.md).
 
 - **input**:
->CSV format file.
+>Base64-encoded UTF-8 CSV contents in the JSON data field.
 
 - **output**:
 >MISP Event attributes
@@ -5062,6 +5328,33 @@ Import a VMRay Summary JSON report.
 
 ## Action Modules
 
+#### [Cortex XDR IOC Publish](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/cortex_xdr_ioc_publish.py)
+
+Upload missing Cortex XDR IOC rules from IDS-marked MISP event and object attributes.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/cortex_xdr_ioc_publish.py)]
+
+- **features**:
+>Publishes MD5/SHA-256, domain and IP indicators through indicators/insert_jsons with validation. Skips observed existing rules, supports Standard/Advanced API keys and defaults to a credential-free dry run. Explicit expiry and per-indicator outcomes are reported. See https://github.com/MISP/misp-modules/blob/main/documentation/action_mod/cortex_xdr_ioc_publish.md.
+
+- **config**:
+>{'params': {'source': {'type': 'string', 'description': 'Stable publisher label included in the IOC comment', 'value': 'misp-modules'}, 'severity': {'type': 'string', 'description': 'INFO, LOW, MEDIUM, HIGH or CRITICAL', 'value': 'MEDIUM'}, 'reputation': {'type': 'string', 'description': 'SUSPICIOUS or BAD', 'value': 'SUSPICIOUS'}, 'expiration_days': {'type': 'string', 'description': 'Explicit IOC lifetime: 7, 30, 90 or 180 days', 'value': '30'}, 'dry_run': {'type': 'string', 'description': 'true previews payloads without any network requests; false publishes', 'value': 'true'}}, 'blocking': True, 'support_filters': False, 'expect_misp_core_format': True}
+
+- **input**:
+>Selected MISP events in workflow data; only non-deleted IDS-marked supported attributes are eligible.
+
+- **output**:
+>Publication summary and per-indicator outcomes; an error signals incomplete or uncertain publication.
+
+- **references**:
+> - https://cortex-docs.paloaltonetworks.com/xdr-api/make-your-first-api-call
+> - https://cortex-docs.paloaltonetworks.com/xdr-api/cortex-platform/iocs
+> - https://cortex-docs.paloaltonetworks.com/xdr-api/cortex-platform/indicator-rules
+
+- **requirements**:
+>Cortex XDR Pro and API credentials with IOC lookup and upload permissions on the module server.
+
+-----
+
 #### [CrowdStrike IOC Publish](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/crowdstrike_ioc_publish.py)
 
 <img src=logos/crowdstrike.png height=60>
@@ -5147,6 +5440,32 @@ Simplistic module to send message to a Mattermost channel.
 
 - **config**:
 >{'params': {'mattermost_hostname': {'type': 'string', 'description': 'The Mattermost domain or URL', 'value': 'example.mattermost.com'}, 'bot_access_token': {'type': 'string', 'description': 'Access token generated when you created the bot account'}, 'channel_id': {'type': 'string', 'description': 'The channel you added the bot to'}, 'message_template': {'type': 'large_string', 'description': 'The template to be used to generate the message to be posted', 'value': 'The **template** will be rendered using *Jinja2*!', 'jinja_supported': True}}, 'blocking': False, 'support_filters': True, 'expect_misp_core_format': False}
+
+-----
+
+#### [n8n Webhook](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/n8n_webhook.py)
+
+Send selected MISP event attributes to an authenticated n8n Webhook trigger.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/n8n_webhook.py)]
+
+- **features**:
+>Delivers one selected MISP event as bounded JSON to a server-configured webhook. Includes a credential-free dry run, optional IDS-only selection, source UUIDs and a deterministic payload digest. Excludes deleted data and binary attachments. HTTP delivery does not confirm downstream workflow execution. See https://github.com/MISP/misp-modules/blob/main/documentation/action_mod/n8n_webhook.md.
+
+- **config**:
+>{'params': {'dry_run': {'type': 'string', 'description': 'true previews; false delivers once to n8n', 'value': 'true'}, 'to_ids_only': {'type': 'string', 'description': 'Only include IDS attributes when true', 'value': 'false'}}, 'blocking': True, 'support_filters': False, 'expect_misp_core_format': True}
+
+- **input**:
+>One selected MISP event with event, object and attribute UUIDs in workflow data.
+
+- **output**:
+>Preview payload or HTTP delivery status, payload SHA-256 and selected/skipped counts.
+
+- **references**:
+> - https://docs.n8n.io/connect/n8n-api
+> - https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.webhook/
+
+- **requirements**:
+>Published n8n workflow with a POST Webhook trigger using Header authentication.
 
 -----
 
@@ -5243,6 +5562,32 @@ Publish MISP event and object indicators to SentinelOne Threat Intelligence with
 
 -----
 
+#### [Shuffle Workflow Execute](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/shuffle_workflow_execute.py)
+
+Start a Shuffle workflow with selected MISP event and object attributes as its JSON execution argument.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/shuffle_workflow_execute.py)]
+
+- **features**:
+>Submits one selected event to the documented workflow execution API. Supports a credential-free dry run by default and optional IDS-only selection. Excludes deleted data and binary attachments, validates the execution acknowledgement, and returns the execution ID without its authorization token. See https://github.com/MISP/misp-modules/blob/main/documentation/action_mod/shuffle_workflow_execute.md.
+
+- **config**:
+>{'params': {'workflow_id': {'type': 'string', 'description': 'Required UUID of the Shuffle workflow to execute'}, 'dry_run': {'type': 'string', 'description': 'true previews; false submits a new workflow execution', 'value': 'true'}, 'to_ids_only': {'type': 'string', 'description': 'Only include IDS attributes when true', 'value': 'false'}}, 'blocking': True, 'support_filters': False, 'expect_misp_core_format': True}
+
+- **input**:
+>One explicitly selected MISP event with event, object and attribute UUIDs in workflow data.
+
+- **output**:
+>Preview request or submitted execution ID, source UUID, payload digest and selected/skipped counts.
+
+- **references**:
+> - https://shuffler.io/docs/API
+> - https://github.com/Shuffle/shuffle-docs/blob/master/docs/API.md#execute-workflow
+
+- **requirements**:
+>Shuffle API key permitted to execute the selected workflow in the configured organization.
+
+-----
+
 #### [Signal](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/signal.py)
 
 Send a message to Signal recipients or a group through signal-cli-rest-api.
@@ -5292,6 +5637,59 @@ This module is merely a test, always returning true. Triggers on event publishin
 
 - **config**:
 >{'params': {'foo': {'type': 'string', 'description': 'blablabla', 'value': 'xyz'}, 'Data extraction path': {'type': 'hash_path', 'description': 'Only post content extracted from this path', 'value': 'Attribute.{n}.AttributeTag.{n}.Tag.name'}}, 'blocking': False, 'support_filters': False, 'expect_misp_core_format': False}
+
+-----
+
+#### [Tines Case Create](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/tines_case_create.py)
+
+Create a Tines Cases v2 case with a MISP event reference and selected-data counts.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/tines_case_create.py)]
+
+- **features**:
+>Creates one OPEN case with POST /api/v2/cases. Sends the selected event UUID, active attribute/object counts and an optional MISP link, without copying observable values or attachments. Supports a credential-free dry run (default), explicit team/priority and server-side connection settings. Each live invocation creates a new case; no automatic retries or duplicate suppression. See https://github.com/MISP/misp-modules/blob/main/documentation/action_mod/tines_case_create.md.
+
+- **config**:
+>{'params': {'team_id': {'type': 'string', 'description': 'Required positive numeric Tines team ID'}, 'name_prefix': {'type': 'string', 'description': 'Case name prefix (1–64 ASCII letters, digits, spaces, ._-)', 'value': 'MISP event'}, 'priority': {'type': 'string', 'description': 'info, low, medium, high or critical', 'value': 'medium'}, 'dry_run': {'type': 'string', 'description': 'true previews without network access; false creates a new case', 'value': 'true'}}, 'blocking': True, 'support_filters': False, 'expect_misp_core_format': True}
+
+- **input**:
+>Exactly one selected MISP event in workflow data, with a valid event UUID.
+
+- **output**:
+>Planned case payload or acknowledged case ID, team, priority and event reference.
+
+- **references**:
+> - https://www.tines.com/stories/docs/api/authentication/
+> - https://www.tines.com/stories/docs/api/cases/create/
+
+- **requirements**:
+>Tines API key permitted to create cases in the configured team.
+
+-----
+
+#### [Torq Case Create](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/torq_case_create.py)
+
+Create a Torq case with a MISP event reference, provenance tags and selected-data counts.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/torq_case_create.py)]
+
+- **features**:
+>Creates one new case using POST /public/v1alpha/cases. Includes a credential-free dry run by default, explicit reporter/severity and server-side credentials. Sends source UUID and counts rather than event contents. Repeated live invocations create new cases; no automatic retries. See https://github.com/MISP/misp-modules/blob/main/documentation/action_mod/torq_case_create.md.
+
+- **config**:
+>{'params': {'reporter_email': {'type': 'string', 'description': 'Required email of the Torq case reporter'}, 'title_prefix': {'type': 'string', 'description': '1–64 ASCII letters, digits, spaces, ._-', 'value': 'MISP event'}, 'severity': {'type': 'string', 'description': 'informational, low, medium, high or critical', 'value': 'medium'}, 'dry_run': {'type': 'string', 'description': 'true previews; false creates a new case', 'value': 'true'}}, 'blocking': True, 'support_filters': False, 'expect_misp_core_format': True}
+
+- **input**:
+>Exactly one explicitly selected MISP event in workflow data, with a valid event UUID.
+
+- **output**:
+>Planned case payload or confirmed Torq case ID, state, severity and source event UUID.
+
+- **references**:
+> - https://developers.torq.io/apidocs/overview
+> - https://developers.torq.io/apidocs/authentication
+> - https://developers.torq.io/apidocs/create-a-case
+
+- **requirements**:
+>Torq API credentials permitted to create cases and a valid case reporter email.
 
 -----
 
