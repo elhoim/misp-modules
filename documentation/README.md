@@ -618,6 +618,41 @@ Look up exact hash, domain and IP IOC rules in a Cortex XDR tenant.
 
 -----
 
+#### [Cortex XSOAR Indicator Lookup](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/cortex_xsoar_indicator_lookup.py)
+
+Look up a MISP observable in Cortex XSOAR 8's indicator store with reputation and expiration metadata.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/cortex_xsoar_indicator_lookup.py)]
+
+- **features**:
+>Uses /xsoar/public/v1/indicators/search with escaped value/type queries and local identity checks, including merged File hash fields and legacy hash indicator types. Supports Standard/Advanced API keys, bounded results, multi-account error checks and a referenced non-IDS annotation. This searches XSOAR indicators rather than XDR IOC rules. See https://github.com/MISP/misp-modules/blob/main/documentation/expansion/cortex_xsoar_indicator_lookup.md.
+
+- **config**:
+> - url
+> - api_key
+> - api_key_id
+> - auth_type
+> - limit
+> - timeout
+
+- **data-source**:
+>external
+
+- **input**:
+>Hash, domain/hostname, IP, URL, email or CVE attribute with a UUID.
+
+- **output**:
+>Original attribute and referenced non-IDS annotation with verified indicators and completeness.
+
+- **references**:
+> - https://cortex-docs.paloaltonetworks.com/cortex-xsoar-8-saas/troubleshoot-and-reference/reference/cortex-xsoar-api
+> - https://cortex-docs.paloaltonetworks.com/xsoar-8-api/make-your-first-api-call
+> - https://cortex-docs.paloaltonetworks.com/xsoar-8-api/cortex-xsoar-8.x-apis/indicators
+
+- **requirements**:
+>Cortex XSOAR 8 API credentials with permission to search indicators.
+
+-----
+
 #### [Country Code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/countrycode.py)
 
 Module to expand country codes.
@@ -3988,23 +4023,30 @@ An expansion module for https://whoisfreaks.com/ that enriches a domain or an IP
 
 <img src=logos/wikidata.png height=60>
 
-An expansion hover module to extract information from Wikidata to have additional information about particular term for analysis.
+Look up Wikidata labels and aliases and return related annotation objects.
 [[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/expansion/wiki.py)]
 
 - **features**:
->This module takes a text attribute as input and queries the Wikidata API. If the text attribute is clear enough to define a specific term, the API returns a wikidata link in response.
+>Looks up exact labels and aliases in Wikidata without an API key. Returns bounded candidate matches with labels, descriptions and Wikidata links as annotation objects related to the source text attribute. Generated attributes have to_ids=false. language defaults to en; max_results defaults to 5 (1-25); timeout defaults to 15 seconds (1-60). Blank settings use defaults. Labels and descriptions fall back to English when unavailable in the requested language. No matches returns an empty Object list. Legacy top-level text requests are accepted, but all responses use misp_standard.
+
+- **config**:
+> - language
+> - max_results
+> - timeout
 
 - **input**:
->Text attribute.
+>A text attribute containing type, value and UUID; legacy top-level text is also accepted.
 
 - **output**:
->Text attribute.
+>Annotation objects with Wikidata links, labels and descriptions, in MISP standard format.
 
 - **references**:
->https://www.wikidata.org
+> - https://www.wikidata.org
+> - https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service
 
 - **requirements**:
->SPARQLWrapper python library
+> - SPARQLWrapper
+> - pymisp
 
 -----
 
@@ -4799,9 +4841,9 @@ This module is used to create a VirusTotal Graph from a MISP event.
 [[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/vt_graph.py)]
 
 - **features**:
->The module takes the MISP event as input and queries the VirusTotal Graph API to create a new graph out of the event.
+>The module takes the MISP event as input and queries the VirusTotal Graph API to create a new graph out of the event, or update an existing graph linked in the event. Supports flat and wrapped events, object attributes and filename/hash composites. Boolean configuration accepts true/false strings.
 >
->Once the graph is ready, we get the url of it, which is returned so we can view it on VirusTotal.
+>Returns graph links as a text file. See https://github.com/MISP/misp-modules/blob/main/documentation/export_mod/vt_graph.md for API v3 behavior, visibility and quota details.
 
 - **config**:
 > - vt_api_key
@@ -4821,10 +4863,13 @@ This module is used to create a VirusTotal Graph from a MISP event.
 >Link of the VirusTotal Graph created for the event.
 
 - **references**:
->https://www.virustotal.com/gui/graph-overview
+> - https://docs.virustotal.com/reference/create-graphs
+> - https://docs.virustotal.com/reference/graphs-update
+> - https://docs.virustotal.com/reference/graph-object
+> - https://github.com/VirusTotal/vt-graph-api
 
 - **requirements**:
->vt_graph_api, the python library to query the VirusTotal graph API
+>vt-graph-api, the official VirusTotal Graph SDK (tested with 2.2.0)
 
 -----
 
@@ -5352,6 +5397,33 @@ Upload missing Cortex XDR IOC rules from IDS-marked MISP event and object attrib
 
 - **requirements**:
 >Cortex XDR Pro and API credentials with IOC lookup and upload permissions on the module server.
+
+-----
+
+#### [Cortex XSOAR Incident Create](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/cortex_xsoar_incident_create.py)
+
+Create a Cortex XSOAR 8 incident with a MISP event reference and selected-data counts.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/action_mod/cortex_xsoar_incident_create.py)]
+
+- **features**:
+>Creates a new incident through /xsoar/public/v1/incident, with dry run enabled by default. Distinguishes HTTP 201 creation from HTTP 200 processing without creation. Supports Standard/Advanced keys and an explicit investigation opt-in. Sends source UUID/counts rather than event contents. See https://github.com/MISP/misp-modules/blob/main/documentation/action_mod/cortex_xsoar_incident_create.md.
+
+- **config**:
+>{'params': {'incident_type': {'type': 'string', 'description': 'Existing XSOAR incident type', 'value': 'Unclassified'}, 'name_prefix': {'type': 'string', 'description': '1–64 ASCII letters, digits, spaces, ._-', 'value': 'MISP event'}, 'severity': {'type': 'string', 'description': 'Numeric XSOAR severity from 0 to 4', 'value': '2'}, 'create_investigation': {'type': 'string', 'description': "true starts the incident type's investigation/playbook", 'value': 'false'}, 'dry_run': {'type': 'string', 'description': 'true previews; false requests a new incident', 'value': 'true'}}, 'blocking': True, 'support_filters': False, 'expect_misp_core_format': True}
+
+- **input**:
+>Exactly one selected, non-deleted MISP event with a valid UUID in workflow data.
+
+- **output**:
+>Preview or created/not-created/uncertain incident outcome, source UUID and selected-data counts.
+
+- **references**:
+> - https://cortex-docs.paloaltonetworks.com/cortex-xsoar-8-saas/troubleshoot-and-reference/reference/cortex-xsoar-api
+> - https://cortex-docs.paloaltonetworks.com/xsoar-8-api/make-your-first-api-call
+> - https://cortex-docs.paloaltonetworks.com/xsoar-8-api/cortex-xsoar-8.x-apis/incidents
+
+- **requirements**:
+>Cortex XSOAR 8 API credentials with incident creation permissions.
 
 -----
 

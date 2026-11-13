@@ -35,6 +35,7 @@ For more information: [Extending MISP with Python modules](https://www.misp-proj
 * [Cluster25 Expand](https://misp.github.io/misp-modules/expansion/#cluster25-expand) - Module to query Cluster25 CTI.
 * [Markdown to PDF converter](https://misp.github.io/misp-modules/expansion/#markdown-to-pdf-converter) - Render the markdown (under GFM) into PDF. Requires pandoc (https://pandoc.org/), wkhtmltopdf (https://wkhtmltopdf.org/) and mermaid dependencies.
 * [Cortex XDR IOC Lookup](https://misp.github.io/misp-modules/expansion/#cortex-xdr-ioc-lookup) - Look up exact hash, domain and IP IOC rules in a Cortex XDR tenant.
+* [Cortex XSOAR Indicator Lookup](https://misp.github.io/misp-modules/expansion/#cortex-xsoar-indicator-lookup) - Look up a MISP observable in Cortex XSOAR 8's indicator store with reputation and expiration metadata.
 * [Country Code](https://misp.github.io/misp-modules/expansion/#country-code) - Module to expand country codes.
 * [CPE Lookup](https://misp.github.io/misp-modules/expansion/#cpe-lookup) - An expansion module to query the CVE search API with a cpe code to get its related vulnerabilities.
 * [CrowdSec CTI](https://misp.github.io/misp-modules/expansion/#crowdsec-cti) - Module to access CrowdSec CTI API.
@@ -157,7 +158,7 @@ For more information: [Extending MISP with Python modules](https://www.misp-proj
 * [Vysion Enrich](https://misp.github.io/misp-modules/expansion/#vysion-enrich) - Module to enrich the information by making use of the Vysion API.
 * [Whois Lookup](https://misp.github.io/misp-modules/expansion/#whois-lookup) - Module to query a local instance of uwhois (https://github.com/rafiot/uwhoisd).
 * [WhoisFreaks Lookup](https://misp.github.io/misp-modules/expansion/#whoisfreaks-lookup) - An expansion module for https://whoisfreaks.com/ that enriches a domain or an IP address. For a domain it queries the WHOIS, DNS and Domain Reputation APIs; for an IP address it queries the IP WHOIS, Geolocation and IP Security APIs. All lookups for a given attribute are executed in parallel.
-* [Wikidata Lookup](https://misp.github.io/misp-modules/expansion/#wikidata-lookup) - An expansion hover module to extract information from Wikidata to have additional information about particular term for analysis.
+* [Wikidata Lookup](https://misp.github.io/misp-modules/expansion/#wikidata-lookup) - Look up Wikidata labels and aliases and return related annotation objects.
 * [IBM X-Force Exchange Lookup](https://misp.github.io/misp-modules/expansion/#ibm-x-force-exchange-lookup) - An expansion module for IBM X-Force Exchange.
 * [XLXS Enrich](https://misp.github.io/misp-modules/expansion/#xlxs-enrich) - Module to extract freetext from a .xlsx document.
 * [YARA Rule Generator](https://misp.github.io/misp-modules/expansion/#yara-rule-generator) - The module takes a hash attribute (md5, sha1, sha256, imphash) as input, and is returning a YARA rule from it.
@@ -219,6 +220,7 @@ For more information: [Extending MISP with Python modules](https://www.misp-proj
 
 ### Action Modules
 * [Cortex XDR IOC Publish](https://misp.github.io/misp-modules/action_mod/#cortex-xdr-ioc-publish) - Upload missing Cortex XDR IOC rules from IDS-marked MISP event and object attributes.
+* [Cortex XSOAR Incident Create](https://misp.github.io/misp-modules/action_mod/#cortex-xsoar-incident-create) - Create a Cortex XSOAR 8 incident with a MISP event reference and selected-data counts.
 * [CrowdStrike IOC Publish](https://misp.github.io/misp-modules/action_mod/#crowdstrike-ioc-publish) - Create and renew module-owned Falcon custom IOCs from MISP event and object attributes.
 * [IRC](https://misp.github.io/misp-modules/action_mod/#irc) - Send a message to an IRC channel.
 * [Matrix](https://misp.github.io/misp-modules/action_mod/#matrix) - Send a message to an unencrypted Matrix room.

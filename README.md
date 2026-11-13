@@ -112,6 +112,7 @@ For further Information see the [license file](https://misp.github.io/misp-modul
 * [Cluster25 Expand](https://misp.github.io/misp-modules/expansion/#cluster25-expand) - Module to query Cluster25 CTI.
 * [Markdown to PDF converter](https://misp.github.io/misp-modules/expansion/#markdown-to-pdf-converter) - Render the markdown (under GFM) into PDF. Requires pandoc (https://pandoc.org/), wkhtmltopdf (https://wkhtmltopdf.org/) and mermaid dependencies.
 * [Cortex XDR IOC Lookup](https://misp.github.io/misp-modules/expansion/#cortex-xdr-ioc-lookup) - Look up exact hash, domain and IP IOC rules in a Cortex XDR tenant.
+* [Cortex XSOAR Indicator Lookup](https://misp.github.io/misp-modules/expansion/#cortex-xsoar-indicator-lookup) - Look up a MISP observable in Cortex XSOAR 8's indicator store with reputation and expiration metadata.
 * [Country Code](https://misp.github.io/misp-modules/expansion/#country-code) - Module to expand country codes.
 * [CPE Lookup](https://misp.github.io/misp-modules/expansion/#cpe-lookup) - An expansion module to query the CVE search API with a cpe code to get its related vulnerabilities.
 * [CrowdSec CTI](https://misp.github.io/misp-modules/expansion/#crowdsec-cti) - Module to access CrowdSec CTI API.
@@ -178,7 +179,7 @@ For further Information see the [license file](https://misp.github.io/misp-modul
 * [OpenCTI Lookup](https://misp.github.io/misp-modules/expansion/#opencti-lookup) - Query an OpenCTI instance for exact observable matches and their context and source references.
 * [AlienVault OTX Lookup](https://misp.github.io/misp-modules/expansion/#alienvault-otx-lookup) - Module to get information from AlienVault OTX.
 * [Passive SSH Enrichment](https://misp.github.io/misp-modules/expansion/#passive-ssh-enrichment) - An expansion module to enrich, SSH key fingerprints and IP addresses with information collected by passive-ssh
-* [PassiveTotal Lookup](https://misp.github.io/misp-modules/expansion/#passivetotal-lookup) - The PassiveTotal MISP expansion module brings the datasets derived from Internet scanning directly into your MISP instance. This module supports passive DNS, historic SSL, WHOIS, and host attributes. In order to use the module, you must have a valid PassiveTotal account username and API key. Registration is free and can be done by visiting https://www.passivetotal.org/register
+* [PassiveTotal Lookup](https://misp.github.io/misp-modules/expansion/#passivetotal-lookup) - The PassiveTotal MISP expansion module brings the datasets derived from Internet scanning directly into your MISP instance. This module supports passive DNS, historic SSL, WHOIS, and host attributes. In order to use the module, you must have a valid PassiveTotal account username and API key. Registration is free and can be done by visiting https://learn.microsoft.com/en-us/defender-xdr/defender-threat-intelligence
 * [PTR Classification](https://misp.github.io/misp-modules/expansion/#ptr-classification) - Classify IP reverse-DNS records or supplied hostnames into ptrclassify and dns-record objects, preserving confidence and evidence, and add matching taxonomy tags to the queried attribute. [JSON documentation](documentation/expansion/ptrclassify.json).
 * [PDF Enrich](https://misp.github.io/misp-modules/expansion/#pdf-enrich) - Module to extract freetext from a PDF document.
 * [phishunt Lookup](https://misp.github.io/misp-modules/expansion/#phishunt-lookup) - Look up a host in phishunt, the CC0 feed of live phishing domains: detected URLs, targeted brand, hosting and cross-feed corroboration.
@@ -242,7 +243,7 @@ For further Information see the [license file](https://misp.github.io/misp-modul
 * [Whisper](https://misp.github.io/misp-modules/expansion/#whisper) - Enrich IPs, domains, and ASNs with threat intelligence and infrastructure context from the Whisper graph.
 * [Whois Lookup](https://misp.github.io/misp-modules/expansion/#whois-lookup) - Module to query a local instance of uwhois (https://github.com/rafiot/uwhoisd).
 * [WhoisFreaks Lookup](https://misp.github.io/misp-modules/expansion/#whoisfreaks-lookup) - An expansion module for https://whoisfreaks.com/ that enriches a domain or an IP address. For a domain it queries the WHOIS, DNS and Domain Reputation APIs; for an IP address it queries the IP WHOIS, Geolocation and IP Security APIs. All lookups for a given attribute are executed in parallel.
-* [Wikidata Lookup](https://misp.github.io/misp-modules/expansion/#wikidata-lookup) - An expansion hover module to extract information from Wikidata to have additional information about particular term for analysis.
+* [Wikidata Lookup](https://misp.github.io/misp-modules/expansion/#wikidata-lookup) - Look up Wikidata labels and aliases and return related annotation objects.
 * [IBM X-Force Exchange Lookup](https://misp.github.io/misp-modules/expansion/#ibm-x-force-exchange-lookup) - An expansion module for IBM X-Force Exchange.
 * [XLXS Enrich](https://misp.github.io/misp-modules/expansion/#xlxs-enrich) - Module to extract freetext from a .xlsx document.
 * [YARA Rule Generator](https://misp.github.io/misp-modules/expansion/#yara-rule-generator) - The module takes a hash attribute (md5, sha1, sha256, imphash) as input, and is returning a YARA rule from it.
@@ -308,6 +309,7 @@ For further Information see the [license file](https://misp.github.io/misp-modul
 
 ### Action Modules
 * [Cortex XDR IOC Publish](https://misp.github.io/misp-modules/action_mod/#cortex-xdr-ioc-publish) - Upload missing Cortex XDR IOC rules from IDS-marked MISP event and object attributes.
+* [Cortex XSOAR Incident Create](https://misp.github.io/misp-modules/action_mod/#cortex-xsoar-incident-create) - Create a Cortex XSOAR 8 incident with a MISP event reference and selected-data counts.
 * [CrowdStrike IOC Publish](https://misp.github.io/misp-modules/action_mod/#crowdstrike-ioc-publish) - Create and renew module-owned Falcon custom IOCs from MISP event and object attributes.
 * [Export to Sentinel or Defender](https://misp.github.io/misp-modules/action_mod/#export-to-sentinel-or-defender) - Export indicators to Microsoft Sentinel or Microsoft Defender. Requires an existing installation of MISP2Sentinel or MISP2Defender.
 * [IRC](https://misp.github.io/misp-modules/action_mod/#irc) - Send a message to an IRC channel.
