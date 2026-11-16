@@ -258,7 +258,7 @@ For further Information see the [license file](https://misp.github.io/misp-modul
 * [Cisco ASA ACL Export](https://misp.github.io/misp-modules/export_mod/#cisco-asa-acl-export) - Export IDS-marked network attributes as Cisco ASA 9.x IPv4/IPv6 extended ACL entries.
 * [Cisco fireSIGHT blockrule Export](https://misp.github.io/misp-modules/export_mod/#cisco-firesight-blockrule-export) - Module to export malicious network activity attributes to Cisco fireSIGHT manager block rules.
 * [CSV Export](https://misp.github.io/misp-modules/export_mod/#csv-export) - Export event and object attributes of any type as CSV.
-* [Microsoft Defender for Endpoint KQL Export](https://misp.github.io/misp-modules/export_mod/#microsoft-defender-for-endpoint-kql-export) - Defender for Endpoint KQL hunting query export module
+* [Microsoft Defender for Endpoint KQL Export](https://misp.github.io/misp-modules/export_mod/#microsoft-defender-for-endpoint-kql-export) - Validated, table-specific Defender hunting queries with bounded indicator batches
 * [Elastic ECS Export](https://misp.github.io/misp-modules/export_mod/#elastic-ecs-export) - Export event and object indicators as ECS threat indicators in Elasticsearch Bulk NDJSON.
 * [Fortinet FortiOS ACL Export](https://misp.github.io/misp-modules/export_mod/#fortinet-fortios-acl-export) - Export IDS-marked network attributes as FortiOS 7.4+ address objects, services and firewall policies.
 * [GoAML Export](https://misp.github.io/misp-modules/export_mod/#goaml-export) - This module is used to export MISP events containing transaction objects into GoAML format.
@@ -279,6 +279,7 @@ For further Information see the [license file](https://misp.github.io/misp-modul
 * [Test Export](https://misp.github.io/misp-modules/export_mod/#test-export) - Skeleton export module.
 * [ThreatStream Export](https://misp.github.io/misp-modules/export_mod/#threatstream-export) - Module to export a structured CSV file for uploading to threatStream.
 * [ThreadConnect Export](https://misp.github.io/misp-modules/export_mod/#threadconnect-export) - Module to export a structured CSV file for uploading to ThreatConnect.
+* [Timesketch Observations Export](https://misp.github.io/misp-modules/export_mod/#timesketch-observations-export) - Export supported timestamped observations as Timesketch JSONL with MISP and source references.
 * [VirusTotal Collections Export](https://misp.github.io/misp-modules/export_mod/#virustotal-collections-export) - Creates a VT Collection from an event iocs.
 * [VirusTotal Graph Export](https://misp.github.io/misp-modules/export_mod/#virustotal-graph-export) - This module is used to create a VirusTotal Graph from a MISP event.
 * [Wazuh CDB Export](https://misp.github.io/misp-modules/export_mod/#wazuh-cdb-export) - Export MISP event and object indicators as a typed Wazuh CDB source list.
@@ -286,12 +287,15 @@ For further Information see the [license file](https://misp.github.io/misp-modul
 * [Zeek Intel Export](https://misp.github.io/misp-modules/export_mod/#zeek-intel-export) - Export validated MISP event and object indicators as a Zeek Intel Framework feed.
 
 ### Import Modules
+* [ADTimeline Import](https://misp.github.io/misp-modules/import_mod/#adtimeline-import) - Import ADTimeline CSV replication metadata with linked-value times, server-scoped counters and source provenance.
 * [ANYRUN Sandbox Import](https://misp.github.io/misp-modules/import_mod/#anyrun-sandbox-import) - A module designed to retrieve an analysis report from the ANY.RUN Sandbox by its unique ID and extract results (such as verdict, malware tags, and IOCs), converting them into MISP attributes within your event.
 * [PDNS COF Importer](https://misp.github.io/misp-modules/import_mod/#pdns-cof-importer) - Passive DNS Common Output Format (COF) MISP importer
 * [CSV Import](https://misp.github.io/misp-modules/import_mod/#csv-import) - Import MISP attributes from base64-encoded UTF-8 CSV contents.
 * [Cuckoo Sandbox Import](https://misp.github.io/misp-modules/import_mod/#cuckoo-sandbox-import) - Module to import Cuckoo JSON.
 * [DMARC Import](https://misp.github.io/misp-modules/import_mod/#dmarc-import) - Import DMARC aggregate XML reports, including gzip and ZIP files.
 * [Email Import](https://misp.github.io/misp-modules/import_mod/#email-import) - Email import module for MISP
+* [Hayabusa and Chainsaw Findings Import](https://misp.github.io/misp-modules/import_mod/#hayabusa-and-chainsaw-findings-import) - Import Hayabusa timelines and Chainsaw hunt results as unreviewed detections with linked Windows event context.
+
 * [GoAML Import](https://misp.github.io/misp-modules/import_mod/#goaml-import) - Module to import MISP objects about financial transactions from GoAML files.
 * [Import Blueprint](https://misp.github.io/misp-modules/import_mod/#import-blueprint) - Generic blueprint to be copy-pasted to quickly boostrap creation of import module.
 * [Joe Sandbox Import](https://misp.github.io/misp-modules/import_mod/#joe-sandbox-import) - A module to import data from a Joe Sandbox analysis json report.
@@ -299,13 +303,22 @@ For further Information see the [license file](https://misp.github.io/misp-modul
 * [MISP JSON Import](https://misp.github.io/misp-modules/import_mod/#misp-json-import) - Module to import MISP JSON format for merging MISP events.
 * [OCR Import](https://misp.github.io/misp-modules/import_mod/#ocr-import) - Optical Character Recognition (OCR) module for MISP.
 * [OpenIOC Import](https://misp.github.io/misp-modules/import_mod/#openioc-import) - Import legacy OpenIOC 1.0 and 1.1 files into MISP.
+* [OSQuery Results Import](https://misp.github.io/misp-modules/import_mod/#osquery-results-import) - Import osquery snapshots and differential results with host, query/pack and source-indicator provenance.
 * [PCAP Import](https://misp.github.io/misp-modules/import_mod/#pcap-import) - Import a PCAP or PCAPNG capture, including reassembled files, emails and network indicators.
+* [Suricata EVE Observations Import](https://misp.github.io/misp-modules/import_mod/#suricata-eve-observations-import) - Import selected Suricata EVE findings with timestamps, flow/Community IDs, signatures and capture references.
 * [TAXII 2.1 Import](https://misp.github.io/misp-modules/import_mod/#taxii-2.1-import) - Import content from a TAXII 2.1 server
 * [CSV Test Import](https://misp.github.io/misp-modules/import_mod/#csv-test-import) - Simple CSV import tool with mapable columns
 * [ThreadAnalyzer Sandbox Import](https://misp.github.io/misp-modules/import_mod/#threadanalyzer-sandbox-import) - Module to import ThreatAnalyzer archive.zip / analysis.json files.
+* [Timesketch and Plaso Findings Import](https://misp.github.io/misp-modules/import_mod/#timesketch-and-plaso-findings-import) - Import selected or annotated Timesketch/Plaso entries with source references and annotation context.
 * [URL Import](https://misp.github.io/misp-modules/import_mod/#url-import) - Simple URL import tool with Faup
+* [Velociraptor Results Import](https://misp.github.io/misp-modules/import_mod/#velociraptor-results-import) - Import Velociraptor JSON, JSONL or CSV results with linked forensic observations and provenance.
+
 * [VMRay API Import](https://misp.github.io/misp-modules/import_mod/#vmray-api-import) - Module to import VMRay (VTI) results.
 * [VMRay Summary JSON Import](https://misp.github.io/misp-modules/import_mod/#vmray-summary-json-import) - Import a VMRay Summary JSON report.
+
+* [Volatility 3 Results Import](https://misp.github.io/misp-modules/import_mod/#volatility-3-results-import) - Import Volatility 3 process, network, suspicious-memory and YARA results with memory-image provenance.
+
+* [Zeek Observations Import](https://misp.github.io/misp-modules/import_mod/#zeek-observations-import) - Import selected Zeek records with timestamps, connection/Community IDs and capture provenance.
 
 ### Action Modules
 * [Cortex XDR IOC Publish](https://misp.github.io/misp-modules/action_mod/#cortex-xdr-ioc-publish) - Upload missing Cortex XDR IOC rules from IDS-marked MISP event and object attributes.

@@ -4312,25 +4312,31 @@ Export event and object attributes of any type as CSV.
 
 #### [Microsoft Defender for Endpoint KQL Export](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/defender_endpoint_export.py)
 
-<img src=logos/defender_endpoint.png height=60>
+<img src=logos/defender_endpoing.png height=60>
 
-Defender for Endpoint KQL hunting query export module
+Validated, table-specific Defender hunting queries with bounded indicator batches
 [[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/defender_endpoint_export.py)]
 
 - **features**:
->This module export an event as Defender for Endpoint KQL queries that can then be used in your own python3 or Powershell tool. If you are using Microsoft Sentinel, you can directly connect your MISP instance to Sentinel and then create queries using the `ThreatIntelligenceIndicator` table to match events against imported IOC.
+>Exports active event and object indicators as independently executable KQL batches. Validates and escapes literals, applies a time range to every table, and distinguishes exact URL matches from domain host matches. Defaults: 7d, exact domains, Endpoint and AlertEvidence tables, 100 indicators per batch. See the module guide for table selection, subdomains and absolute time ranges.
 
 - **config**:
->Period
+> - Period
+> - start_time
+> - end_time
+> - domain_mode
+> - tables
+> - batch_size
 
 - **input**:
->MISP Event attributes
+>MISP event and object attributes
 
 - **output**:
->Defender for Endpoint KQL queries
+>One independently executable KQL query per line in a .kql file
 
 - **references**:
->https://docs.microsoft.com/en-us/windows/security/threat-protection/microsoft-defender-atp/advanced-hunting-schema-reference
+> - https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-schema-tables
+> - https://github.com/MISP/misp-modules/blob/main/documentation/export_mod/defender_endpoint_export.md
 
 -----
 
@@ -4801,6 +4807,31 @@ Module to export a structured CSV file for uploading to ThreatConnect.
 
 -----
 
+#### [Timesketch Observations Export](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/timesketch_export.py)
+
+Export supported timestamped observations as Timesketch JSONL with MISP and source references.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/timesketch_export.py)]
+
+- **features**:
+>Exports existing timesketch-timeline and timesketch_message objects, supported forensic object times and attribute first_seen/last_seen observations. Emits exact microsecond timestamps and the mandatory Timesketch fields. MISP modification times are excluded; source identifiers/annotations are namespaced snapshots. Does not export attachments or contact Timesketch. Complements existing playbooks. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/export_mod/timesketch_export.md).
+
+- **config**:
+>misp_url
+
+- **input**:
+>MISP events in standard, bare or legacy export format, restricted to the intended selection.
+
+- **output**:
+>Base64-encoded UTF-8 Timesketch JSONL with mandatory fields, source references and API warnings.
+
+- **references**:
+>https://timesketch.org/guides/user/importing-data/
+
+- **requirements**:
+>PyMISP
+
+-----
+
 #### [VirusTotal Collections Export](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/virustotal_collections.py)
 
 <img src=logos/virustotal.png height=60>
@@ -4900,18 +4931,20 @@ Export MISP event and object indicators as a typed Wazuh CDB source list.
 
 <img src=logos/yara.png height=60>
 
-This module is used to export MISP events to YARA.
+Export stored YARA collections and optionally generate literal IOC content searches.
 [[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/yara_export.py)]
 
 - **features**:
->The module will dynamically generate YARA rules for attributes that are marked as to IDS. Basic metadata about the event is added to the rule.
->Attributes that are already YARA rules are also exported, with a rewritten rule name.
+>Produces a ZIP of unchanged stored YARA collections in separate namespaces, with a provenance and exclusion manifest. The default both mode exports yara attributes regardless of to_ids and generates literal, case-sensitive UTF-8 byte searches from supported IDS-marked attributes. Select rules or indicators to export only stored collections or generated IOC searches, respectively. A filename or domain matches bytes in scanned content, not a file's name or DNS activity. Deleted data is excluded. Collections and the complete output are compiled with filesystem includes disabled. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/export_mod/yara_export.md).
+
+- **config**:
+>mode
 
 - **input**:
->Attributes and Objects.
+>MISP events and object attributes in standard, bare or legacy export format.
 
 - **output**:
->A YARA file that can be used with the YARA scanning tool.
+>Base64-encoded ZIP containing rules/*.yara and manifest.json; load using the manifest namespaces.
 
 - **references**:
 >https://virustotal.github.io/yara/
@@ -4948,6 +4981,29 @@ Export validated MISP event and object indicators as a Zeek Intel Framework feed
 
 ## Import Modules
 
+#### [ADTimeline Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/adtimeline_import.py)
+
+Import ADTimeline CSV replication metadata with linked-value times, server-scoped counters and source provenance.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/adtimeline_import.py)]
+
+- **features**:
+>Imports native semicolon-delimited timeline CSV as unreviewed ad-replication-metadata objects with an exact source attachment. Preserves all columns and raw timestamps. Replication metadata is partial last-change evidence, not actor attribution or confirmed malicious activity. No LDAP access or code execution. Includes its object template. See the usage guide for supported inputs and limits.
+
+- **input**:
+>Base64-encoded native timeline_*.csv (UTF-8, or BOM-marked UTF-16).
+
+- **output**:
+>Source file and unreviewed AD replication metadata objects.
+
+- **references**:
+> - https://github.com/ANSSI-FR/ADTimeline
+> - https://github.com/MISP/misp-modules/blob/main/documentation/import_mod/adtimeline_import.md
+
+- **requirements**:
+>PyMISP
+
+-----
+
 #### [ANYRUN Sandbox Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/anyrun_sandbox_import.py)
 
 <img src=logos/anyrun.png height=60>
@@ -4973,6 +5029,41 @@ A module designed to retrieve an analysis report from the ANY.RUN Sandbox by its
 - **requirements**:
 > - anyrun-sdk: ANY.RUN API python3 library
 > - ANY.RUN Sandbox API-KEY
+
+-----
+
+#### [Autopsy and Mobile Forensic Selected Results Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/autopsy_import.py)
+
+Import selected browser, download, communication and application artifacts with forensic provenance.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/autopsy_import.py)]
+
+- **features**:
+>Accepts Autopsy Export Selected Rows to CSV and a versioned selected-results JSON interchange for mobile parsers. Reuses tsk-web-history/bookmark/cookie/search-query/downloads, tsk-chats and software objects. Preserves selected raw rows, report hashes and case/device/source identifiers in forensic-artifact objects. Explicit row selection omits the full source attachment when rows are excluded. All attributes are unreviewed, non-IDS and non-correlating. Local timestamps need an explicit report offset; paths and URLs are never opened. Commercial native reports require sample fixtures and a named maintainer before an adapter is added. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/import_mod/autopsy_import.md).
+
+- **config**:
+> - format
+> - artifact_type
+> - rows
+> - case_id
+> - data_source_id
+> - device_id
+> - evidence_id
+> - report_id
+> - tool_version
+> - timezone
+
+- **input**:
+>Base64 UTF-8 Autopsy selected-row CSV or misp-forensic-selected version 1 JSON.
+
+- **output**:
+>Source report, forensic-artifact provenance and linked tsk-* or software observations.
+
+- **references**:
+> - https://www.autopsy.com/
+> - https://github.com/sleuthkit/autopsy/blob/develop/Core/src/org/sleuthkit/autopsy/directorytree/ExportCSVAction.java
+
+- **requirements**:
+>PyMISP
 
 -----
 
@@ -5079,8 +5170,8 @@ Email import module for MISP
 
 - **features**:
 >This module can be used to import e-mail text as well as attachments and urls.
->Configuration parameters are used to unzip attachments, guess zip attachment passwords, extract urls, remove common subject markers, and extract partial inline forwarded emails (extract_forwarded_emails, disabled by default): set each one of them to True or False to process or not the respective corresponding actions.
->Forward extraction supports English From/To/Cc/Bcc/Reply-To/Sent/Date/Subject header blocks in plain text and HTML, including Outlook. Folded header values are supported. Each block needs a sender address, a subject, and a recipient or date. At most 20 partial email objects are linked to the carrier with includes references. Plain text is preferred; HTML is used if no forwards are found in plain text. Reconstructed attributes have to_ids disabled; the original email is retained as evidence. Local or unparseable timestamps are preserved as text in the reconstructed headers. Existing extract_urls and remove_subject_markers settings also apply to forwards. URL objects are shared between the carrier and forwards that contain the same URL.
+>Configuration parameters are used to unzip attachments, guess zip attachment passwords, extract urls, remove common subject markers, and extract partial inline forwarded emails (extract_forwarded_emails, disabled by default): All switches default to False and accept JSON booleans, 0/1, and case-insensitive yes/no strings. ZIP extraction is limited per request to 100 members, 50 MiB expanded bytes, and 100 password candidates; each member is limited to 20 MiB. Originals are retained and skipped archives are reported.
+>Forward extraction supports English From/To/Cc/Bcc/Reply-To/Sent/Date/Subject header blocks in plain text and HTML, including Outlook. Folded header values are supported. Each block needs a sender address, a subject, and a recipient or date. At most 20 partial email objects are linked to the carrier with includes references. Plain text is preferred; HTML is used if no forwards are found in plain text. Reconstructed attributes have to_ids disabled; the original email is retained as evidence. Local or unparseable timestamps are preserved as text in the reconstructed headers. Existing extract_urls and remove_subject_markers settings also apply to forwards. URL objects are shared between the carrier and forwards that contain the same URL. Submitted EML/MSG bytes are preserved separately from converted EML and heuristic forwards. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/import_mod/email_import.md).
 
 - **config**:
 > - unzip_attachments
@@ -5097,6 +5188,29 @@ Email import module for MISP
 
 - **references**:
 >https://github.com/MISP/mail_to_misp
+
+-----
+
+#### [Hayabusa and Chainsaw Findings Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/evtx_findings_import.py)
+
+Import Hayabusa timelines and Chainsaw hunt results as unreviewed detections with linked Windows event context.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/evtx_findings_import.py)]
+
+- **features**:
+>Accepts Hayabusa JSON, JSONL and CSV timelines and Chainsaw hunt JSON/JSONL, including aggregate and cached results. Preserves the original export, rule identity/severity, host, channel, provider, Windows Event ID, record ID, EVTX references and unmapped data. Aggregate event contexts remain separate linked objects. A rule match is unreviewed, not an analyst-confirmed malicious finding. All attributes are non-IDS and non-correlating. Includes compatible object templates; no tool execution, network access or new dependencies. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/import_mod/evtx_findings_import.md).
+
+- **input**:
+>Base64-encoded UTF-8 detection export in data; optional filename and tool/format settings.
+
+- **output**:
+>Source file, windows-event-log-detection and windows-event-log-record objects.
+
+- **references**:
+> - https://github.com/Yamato-Security/hayabusa/blob/main/config/profiles.yaml
+> - https://github.com/WithSecureOpenSource/chainsaw/blob/master/src/cli.rs
+
+- **requirements**:
+>PyMISP
 
 -----
 
@@ -5242,6 +5356,28 @@ Import legacy OpenIOC 1.0 and 1.1 files into MISP.
 
 -----
 
+#### [Suricata EVE Observations Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/suricata_import.py)
+
+Import selected Suricata EVE findings with timestamps, flow/Community IDs, signatures and capture references.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/suricata_import.py)]
+
+- **features**:
+>Accepts native EVE JSON/JSONL, preserving flow/packet/transaction IDs, alert SID/GID/revision/message, severity, action, sensor/capture context and raw protocol records. Reuses network-connection and pcap-metadata with a bundled network-observation template. Event-type/flow-ID selection omits the full attachment when records are excluded. Sensor alerts remain unreviewed observations, not confirmed malicious findings. All attributes are non-IDS and non-correlating. No Suricata execution, capture access or network calls. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/import_mod/suricata_import.md).
+
+- **input**:
+>Base64-encoded UTF-8 EVE JSON/JSONL, optionally selected by event type or flow ID.
+
+- **output**:
+>Source file, network-observation, network-connection and optional pcap-metadata objects.
+
+- **references**:
+>https://docs.suricata.io/en/latest/output/eve/eve-json-format.html
+
+- **requirements**:
+>PyMISP
+
+-----
+
 #### [TAXII 2.1 Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/taxii21.py)
 
 Import content from a TAXII 2.1 server
@@ -5269,13 +5405,37 @@ Simple CSV import tool with mapable columns
 
 -----
 
+#### [OSQuery Results Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/osquery_import.py)
+
+<img src=logos/osquery.png height=60>
+
+Import osquery snapshots and differential results with host, query/pack and source-indicator provenance.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/osquery_import.py)]
+
+- **features**:
+>Completes the return path from OSQuery Export and OSQuery Pack Publish. Accepts JSON/JSONL event, batch and snapshot logs, plus explicitly identified ad-hoc snapshots. Preserves host/query/pack identity, execution time, schedule epoch/counter, row action, decorations, raw rows and hunting source references. Empty results remain separate from matches, and removed rows do not delete MISP data. Includes an osquery-result template. No SQL execution, endpoint access or new dependencies. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/import_mod/osquery_import.md).
+
+- **input**:
+>Base64-encoded UTF-8 JSON/JSONL result export; optional collector context and exporter sources map.
+
+- **output**:
+>Exact source file and unreviewed osquery-result objects, including explicit empty-result records.
+
+- **references**:
+>https://osquery.readthedocs.io/en/stable/deployment/logging/
+
+- **requirements**:
+>PyMISP
+
+-----
+
 #### [PCAP Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/pcap_import.py)
 
 Import a PCAP or PCAPNG capture, including reassembled files, emails and network indicators.
 [[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/pcap_import.py)]
 
 - **features**:
->Parses captures offline with TShark, without capture privileges or network lookups. Extracts IPv4/IPv6 endpoints, DNS names and answers, HTTP URLs, hosts and user agents, and TLS SNI hostnames. Reassembles HTTP files and SMTP messages; reuses email_import for email objects, attachments and body URLs. Requires complete, unencrypted application traffic for payload extraction; HTTPS yields visible TLS metadata only. Other file-transfer protocols and TLS decryption are not supported. Observed network attributes have to_ids disabled for analyst review. Captures are limited to 50 MiB, exported data and JSON metadata to 100 MiB each. timeout is a positive number of seconds, at most 300 (default 60). Output sizes, including diagnostics, are checked every 50 ms while TShark runs; exceeding a limit kills the process. Bursts can overshoot between checks; these checks are not filesystem quotas.
+>Parses captures offline with TShark, without capture privileges or network lookups. Extracts IPv4/IPv6 endpoints, DNS names and answers, HTTP URLs, hosts and user agents, and TLS SNI hostnames. Reassembles HTTP files and SMTP messages; reuses email_import for email objects, attachments and body URLs. Requires complete, unencrypted application traffic for payload extraction; HTTPS yields visible TLS metadata only. Other file-transfer protocols and TLS decryption are not supported. Observed network attributes have to_ids disabled for analyst review. Captures are limited to 50 MiB, exported data and JSON metadata to 100 MiB each. timeout is a positive number of seconds, at most 300 (default 60). Output sizes, including diagnostics, are checked every 50 ms while TShark runs; exceeding a limit kills the process. Bursts can overshoot between checks; these checks are not filesystem quotas. Adds capture hashes and pcap-metadata, capture-scoped TCP/UDP network-connection objects, packet timestamps and observation intervals. Reconstructed content links to streams by exact payload hashes; identical content retains all observed sources. SMTP provenance uses a targeted second pass within the same timeout and combined metadata limit. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/import_mod/pcap_import.md).
 
 - **config**:
 >timeout
@@ -5284,7 +5444,7 @@ Import a PCAP or PCAPNG capture, including reassembled files, emails and network
 >Base64-encoded PCAP or PCAPNG file
 
 - **output**:
->MISP network attributes, file and email objects, including attachments and hashes
+>MISP network attributes, pcap-metadata, network-connection, file and email objects with capture/stream provenance
 
 - **references**:
 > - https://github.com/MISP/misp-modules/issues/397
@@ -5316,6 +5476,29 @@ Module to import ThreatAnalyzer archive.zip / analysis.json files.
 
 -----
 
+#### [Timesketch and Plaso Findings Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/timesketch_import.py)
+
+Import selected or annotated Timesketch/Plaso entries with source references and annotation context.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/timesketch_import.py)]
+
+- **features**:
+>Accepts Timesketch search JSON, JSONL and CSV exports and Plaso psort json_line output. Reuses the timesketch-timeline object, preserving event/sketch/timeline identifiers, annotations, raw entries and microsecond timestamps. Selection can include all supplied entries, explicit selections or annotations. Source annotations remain context, not malicious verdicts. Includes a compatible template and requires no API credentials or tool execution. Complements existing Timesketch playbooks. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/import_mod/timesketch_import.md).
+
+- **input**:
+>Base64-encoded UTF-8 JSON, JSONL or CSV in data; optional filename and selection/source settings.
+
+- **output**:
+>Source file and timesketch-timeline objects, with unnormalized times retained and reported.
+
+- **references**:
+> - https://timesketch.org/
+> - https://plaso.readthedocs.io/
+
+- **requirements**:
+>PyMISP
+
+-----
+
 #### [URL Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/url_import.py)
 
 Simple URL import tool with Faup
@@ -5323,6 +5506,29 @@ Simple URL import tool with Faup
 
 - **features**:
 >
+
+-----
+
+#### [Velociraptor Results Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/velociraptor_import.py)
+
+Import Velociraptor JSON, JSONL or CSV results with linked forensic observations and provenance.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/velociraptor_import.py)]
+
+- **features**:
+>Preserves the original export and every result row, including unmapped fields. Maps Windows.System.Pslist, Windows.System.Services, Windows.Network.NetstatEnriched/Netstat and Windows.Search.FileFinder into process, file, network-socket and windows-service objects. Other artifacts are retained as provenance rows with warnings. All attributes have to_ids disabled. No credentials, network access, VQL execution or additional dependencies are required. Includes the velociraptor-result template for older PyMISP. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/import_mod/velociraptor_import.md).
+
+- **input**:
+>Base64-encoded UTF-8 JSON, JSONL or CSV in data; artifact/context in config or row metadata.
+
+- **output**:
+>MISP source file, velociraptor-result and derived observation objects in misp_standard format.
+
+- **references**:
+> - https://docs.velociraptor.app/
+> - https://github.com/Velocidex/velociraptor/tree/master/artifacts/definitions
+
+- **requirements**:
+>PyMISP
 
 -----
 
@@ -5368,6 +5574,51 @@ Import a VMRay Summary JSON report.
 
 - **config**:
 >disable_tags
+
+-----
+
+#### [Volatility 3 Results Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/volatility3_import.py)
+
+Import Volatility 3 process, network, suspicious-memory and YARA results with memory-image provenance.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/volatility3_import.py)]
+
+- **features**:
+>Accepts native JSON/JSONL from Windows pslist, psscan, pstree, cmdline, netscan, netstat, malfind and vadyarascan, plus layer-wide yarascan. Preserves exact exports, image hashes, plugin/framework versions, offsets, process creation times, renderer hierarchy and unmapped fields. Reuses process and network-socket objects and includes a volatility3-result template. Suspicious memory and YARA matches remain unreviewed. No image access, Volatility execution, network calls or new dependencies. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/import_mod/volatility3_import.md).
+
+- **input**:
+>Base64-encoded native JSON/JSONL in data, with plugin and optional image/version context in config or metadata.
+
+- **output**:
+>Source export, optional memory-image file, volatility3-result, process and network-socket objects.
+
+- **references**:
+> - https://github.com/volatilityfoundation/volatility3
+> - https://volatility3.readthedocs.io/
+
+- **requirements**:
+>PyMISP
+
+-----
+
+#### [Zeek Observations Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/zeek_import.py)
+
+Import selected Zeek records with timestamps, connection/Community IDs and capture provenance.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/zeek_import.py)]
+
+- **features**:
+>Accepts native JSON/JSONL and typed Zeek ASCII logs, including escaped/unset fields. Preserves raw records, stream/sensor context, exact timestamps, UIDs, Community IDs, notices/signatures and capture references. Reuses network-connection and pcap-metadata with a bundled network-observation template. UID selection omits the full source attachment when records are excluded. All observations remain unreviewed and non-IDS. No Zeek execution, capture access or network calls. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/import_mod/zeek_import.md).
+
+- **input**:
+>Base64-encoded UTF-8 Zeek JSON/JSONL or ASCII log; JSON requires explicit stream context.
+
+- **output**:
+>Source file, network-observation, network-connection and optional pcap-metadata objects.
+
+- **references**:
+>https://docs.zeek.org/en/stable/logs/index.html
+
+- **requirements**:
+>PyMISP
 
 -----
 

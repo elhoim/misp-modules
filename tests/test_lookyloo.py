@@ -73,7 +73,7 @@ def assert_valid(result):
         loaded = MISPObject(
             obj["name"],
             strict=True,
-            **({"misp_objects_template_custom": template} if obj["name"] == "lookyloo-capture" else {})
+            **({"misp_objects_template_custom": template} if obj["name"] == "lookyloo-capture" else {}),
         )
         loaded.from_dict(**obj)
         loaded.to_json(strict=True)
@@ -170,7 +170,7 @@ def capture_responses(extra=None):
     return {**result, **(extra or {})}
 
 
-def run_capture(config=None, extra=None, value=CAPTURE, type_="text"):
+def run_capture(config=None, extra=None, value=CAPTURE, type_="text", module=lookyloo_capture):
     replies = capture_responses(extra)
 
     def request(method, path, **kwargs):
@@ -181,8 +181,41 @@ def run_capture(config=None, extra=None, value=CAPTURE, type_="text"):
         return data if isinstance(data, MagicMock) else response(data)
 
     with patch.object(requests.Session, "request", side_effect=request) as mocked:
-        result = lookyloo_capture.handler(query(value, type_, config))
+        result = module.handler(query(value, type_, config))
     return result, mocked
+
+
+@pytest.mark.parametrize("module", [lookyloo, lookyloo_capture])
+@pytest.mark.parametrize("value", [CAPTURE, "  " + CAPTURE.upper() + "  "])
+def test_uuid_attribute_retrieves_specific_capture(module, value):
+    result, request = run_capture(value=value, type_="uuid", module=module)
+    assert_valid(result)
+    captures = objects(result, "lookyloo-capture")
+    assert len(captures) == 1
+    assert values(captures[0], "capture-id") == [CAPTURE]
+    assert result["results"]["Attribute"][0]["type"] == "uuid"
+    assert result["results"]["Attribute"][0]["value"] == value.strip()
+    assert {call.args for call in request.call_args_list} == {
+        ("GET", shared.DEFAULT_URL + "/json/" + CAPTURE + "/" + endpoint)
+        for endpoint in ("info", *shared.CORE_ENDPOINTS)
+    }
+
+
+@pytest.mark.parametrize("module", [lookyloo, lookyloo_capture])
+@pytest.mark.parametrize("value", ["not-a-uuid", SOURCE + "/info", " "])
+def test_invalid_uuid_attribute_never_requests(module, value):
+    with patch.object(requests.Session, "request") as request:
+        assert "error" in module.handler(query(value, "uuid"))
+    request.assert_not_called()
+
+
+@pytest.mark.parametrize("module", [lookyloo, lookyloo_capture])
+def test_missing_uuid_capture_returns_error(module):
+    with patch.object(requests.Session, "request", return_value=response({}, 404)) as request:
+        result = module.handler(query(CAPTURE, "uuid"))
+    assert "HTTP 404" in result["error"]
+    assert request.call_count == 1
+    assert request.call_args.args == ("GET", shared.DEFAULT_URL + "/json/" + CAPTURE + "/info")
 
 
 def test_capture_core_endpoints_and_resources():
@@ -227,6 +260,166 @@ def test_optional_endpoints_cookies_favicon_contacts_and_exports():
     assert any(a["value"] == "abuse@example.org" for a in result["results"]["Attribute"])
     assert raw(objects(result, "lookyloo-capture")[0])["misp_export.json"] == replies["misp_export"]
     assert [call.args[0] for call in request.call_args_list].count("POST") == 1
+
+
+def native_export():
+    return {
+        "info": "Remote capture event",
+        "uuid": SECOND,
+        "Orgc": {"name": "Remote organisation"},
+        "Tag": [{"name": "event-tag"}],
+        "Attribute": [
+            {"type": "link", "value": shared.DEFAULT_URL + "/tree/" + CAPTURE, "uuid": SOURCE},
+            {
+                "type": "attachment",
+                "value": "har.json",
+                "data": "e30=",
+                "uuid": SECOND,
+                "comment": "HTTP Archive",
+                "first_seen": "2026-10-14T12:00:00+00:00",
+                "to_ids": True,
+                "id": "12",
+                "event_id": "34",
+                "distribution": "4",
+                "sharing_group_id": "56",
+                "Tag": [{"name": "tlp:clear", "id": "7"}],
+            },
+        ],
+        "Object": [
+            {
+                "name": "url",
+                "uuid": CAPTURE,
+                "comment": "Submitted URL",
+                "Attribute": [{"object_relation": "url", "type": "url", "value": URL, "to_ids": True}],
+                "ObjectReference": [
+                    {"referenced_uuid": SOURCE, "relationship_type": "captured-by"},
+                    {"referenced_uuid": "00000000-0000-4000-8000-000000000001", "relationship_type": "related-to"},
+                ],
+            },
+            {
+                "name": "file",
+                "uuid": "00000000-0000-4000-8000-000000000001",
+                "Attribute": [
+                    {"object_relation": "md5", "type": "md5", "value": "b" * 32, "to_ids": True},
+                    {
+                        "object_relation": "malware-sample",
+                        "type": "malware-sample",
+                        "value": "file.bin",
+                        "data": "dGVzdA==",
+                        "to_ids": True,
+                    },
+                ],
+                "ObjectReference": [{"referenced_uuid": SECOND, "relationship_type": "rendered-as", "comment": "HAR"}],
+            },
+        ],
+    }
+
+
+@pytest.mark.parametrize("module", [lookyloo, lookyloo_capture])
+@pytest.mark.parametrize("wrapped", [False, True])
+def test_misp_export_imports_attributes_objects_attachments_and_references(module, wrapped):
+    export = native_export()
+    payload = [{"Event": export}] if wrapped else [export]
+    result, _ = run_capture(
+        {"include_misp_export": True, "include_raw": False}, {"misp_export": payload}, type_="uuid", module=module
+    )
+    assert_valid(result)
+    capture = objects(result, "lookyloo-capture")[0]
+    attributes = result["results"]["Attribute"]
+    attachment = next(a for a in attributes if a["type"] == "attachment")
+    assert base64.b64decode(attachment["data"]) == b"{}"
+    assert attachment["comment"] == "HTTP Archive"
+    assert attachment["first_seen"].startswith("2026-10-14T12:00:00")
+    assert attachment["Tag"] == [{"name": "tlp:clear"}]
+    assert not {"id", "event_id", "distribution", "sharing_group_id"} & attachment.keys()
+    assert len({a["uuid"] for a in attributes}) == len(attributes)
+    assert not raw(capture)
+    url = next(o for o in objects(result, "url") if o.get("comment") == "Submitted URL")
+    file = next(o for o in objects(result, "file") if values(o, "md5"))
+    assert {r["referenced_uuid"] for r in url["ObjectReference"]} == {
+        attributes[1]["uuid"],
+        file["uuid"],
+    }
+    assert file["ObjectReference"][0]["referenced_uuid"] == attachment["uuid"]
+    sample = next(a for a in file["Attribute"] if a["type"] == "malware-sample")
+    assert base64.b64decode(sample["data"]) == b"test"
+    assert sample["encrypt"] is True
+    assert {"Orgc", "info", "Tag"}.isdisjoint(result["results"])
+
+
+@pytest.mark.parametrize("shape", ["event", "wrapped", "response", "empty"])
+def test_misp_export_response_shapes(shape):
+    event = native_export()
+    payload = {"event": event, "wrapped": {"Event": event}, "response": {"response": [event]}, "empty": []}[shape]
+    result, _ = run_capture({"include_misp_export": True}, {"misp_export": payload})
+    assert_valid(result)
+    assert not values(objects(result, "lookyloo-capture")[0], "error")
+    assert len(result["results"]["Attribute"]) == (1 if shape == "empty" else 3)
+
+
+def test_misp_export_limits_skip_references_to_truncated_objects():
+    export = native_export()
+    export["Object"][0]["ObjectReference"].reverse()  # first reference points to the object removed by max_items
+    result, _ = run_capture({"include_misp_export": True, "max_items": 1}, {"misp_export": [export]})
+    assert_valid(result)
+    assert len(result["results"]["Attribute"]) == 2
+    assert any("reference skipped" in text for text in values(objects(result, "lookyloo-capture")[0], "text"))
+
+
+def test_misp_export_multiple_events_keep_references_within_each_event():
+    result, _ = run_capture({"include_misp_export": True}, {"misp_export": [native_export(), native_export()]})
+    assert_valid(result)
+    attributes = result["results"]["Attribute"]
+    identifiers = [a["uuid"] for a in attributes] + [o["uuid"] for o in result["results"]["Object"]]
+    assert len(set(identifiers)) == len(identifiers)
+    urls = [o for o in objects(result, "url") if o.get("comment") == "Submitted URL"]
+    assert len(urls) == 2
+    for index, url in enumerate(urls):
+        captured_by = next(r for r in url["ObjectReference"] if r["relationship_type"] == "captured-by")
+        assert captured_by["referenced_uuid"] == attributes[1 + 2 * index]["uuid"]
+
+
+def test_malformed_export_event_does_not_import_partial_content():
+    export = native_export()
+    export["Object"][1]["ObjectReference"][0]["referenced_uuid"] = "invalid"
+    result, _ = run_capture({"include_misp_export": True}, {"misp_export": [export]})
+    assert_valid(result)
+    assert len(result["results"]["Attribute"]) == 1
+    assert len(objects(result, "url")) == len(objects(result, "file")) == 1  # core resources only
+    assert values(objects(result, "lookyloo-capture")[0], "error")
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        [None],
+        {"Event": []},
+        {"Attribute": {}},
+        {"Object": [None]},
+        {"Attribute": [{"type": "bad-type", "value": "x"}]},
+        {"Attribute": [{"type": "text", "value": []}]},
+        {"Attribute": [{"type": "attachment", "value": "a", "data": "%%%"}]},
+        {"Attribute": [{"type": "text", "value": "x", "uuid": 1}]},
+        {"Object": [{"name": "url", "Attribute": [{"type": "url", "value": URL}]}]},
+    ],
+)
+def test_malformed_misp_export_preserves_core_enrichment(payload):
+    result, _ = run_capture({"include_misp_export": True}, {"misp_export": payload})
+    assert_valid(result)
+    assert len(result["results"]["Attribute"]) == 1
+    assert values(objects(result, "lookyloo-capture")[0], "error")
+
+
+def test_misp_export_has_a_separate_response_size_limit():
+    payload = [native_export()]
+    with patch.object(shared, "MAX_RESPONSE_BYTES", 1):
+        with patch.object(requests.Session, "request", return_value=response(payload)):
+            with shared.Client({}) as client:
+                assert client.request(f"/json/{CAPTURE}/misp_export") == payload
+    with patch.object(shared, "MAX_MISP_EXPORT_BYTES", 1):
+        result, _ = run_capture({"include_misp_export": True}, {"misp_export": payload})
+    assert_valid(result)
+    assert any("exceeds" in error for error in values(objects(result, "lookyloo-capture")[0], "error"))
 
 
 @pytest.mark.parametrize("endpoint", ["modules", "cookies", "favicons", "storage_state"])
@@ -298,8 +491,9 @@ def test_invalid_lookup_responses(body):
 
 
 def test_response_size_limit():
-    with patch.object(shared, "MAX_RESPONSE_BYTES", 10), patch.object(
-        requests.Session, "request", return_value=response(records())
+    with (
+        patch.object(shared, "MAX_RESPONSE_BYTES", 10),
+        patch.object(requests.Session, "request", return_value=response(records())),
     ):
         assert "exceeds" in lookyloo.handler(query())["error"]
 
@@ -371,6 +565,7 @@ def test_metadata_and_no_query():
     for module in (lookyloo, lookyloo_capture):
         assert module.handler() is False
         assert module.introspection()["format"] == "misp_standard"
+        assert "uuid" in module.introspection()["input"]
         assert "url" in module.version()["config"]
 
 

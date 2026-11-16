@@ -140,25 +140,31 @@ Export event and object attributes of any type as CSV.
 
 #### [Microsoft Defender for Endpoint KQL Export](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/defender_endpoint_export.py)
 
-<img src=../logos/defender_endpoint.png height=60>
+<img src=../logos/defender_endpoing.png height=60>
 
-Defender for Endpoint KQL hunting query export module
+Validated, table-specific Defender hunting queries with bounded indicator batches
 [[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/defender_endpoint_export.py)]
 
 - **features**:
->This module export an event as Defender for Endpoint KQL queries that can then be used in your own python3 or Powershell tool. If you are using Microsoft Sentinel, you can directly connect your MISP instance to Sentinel and then create queries using the `ThreatIntelligenceIndicator` table to match events against imported IOC.
+>Exports active event and object indicators as independently executable KQL batches. Validates and escapes literals, applies a time range to every table, and distinguishes exact URL matches from domain host matches. Defaults: 7d, exact domains, Endpoint and AlertEvidence tables, 100 indicators per batch. See the module guide for table selection, subdomains and absolute time ranges.
 
 - **config**:
->Period
+> - Period
+> - start_time
+> - end_time
+> - domain_mode
+> - tables
+> - batch_size
 
 - **input**:
->MISP Event attributes
+>MISP event and object attributes
 
 - **output**:
->Defender for Endpoint KQL queries
+>One independently executable KQL query per line in a .kql file
 
 - **references**:
->https://docs.microsoft.com/en-us/windows/security/threat-protection/microsoft-defender-atp/advanced-hunting-schema-reference
+> - https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-schema-tables
+> - https://github.com/MISP/misp-modules/blob/main/documentation/export_mod/defender_endpoint_export.md
 
 -----
 
@@ -676,6 +682,31 @@ Module to export a structured CSV file for uploading to ThreatConnect.
 
 -----
 
+#### [Timesketch Observations Export](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/timesketch_export.py)
+
+Export supported timestamped observations as Timesketch JSONL with MISP and source references.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/timesketch_export.py)]
+
+- **features**:
+>Exports existing timesketch-timeline and timesketch_message objects, supported forensic object times and attribute first_seen/last_seen observations. Emits exact microsecond timestamps and the mandatory Timesketch fields. MISP modification times are excluded; source identifiers/annotations are namespaced snapshots. Does not export attachments or contact Timesketch. Complements existing playbooks. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/export_mod/timesketch_export.md).
+
+- **config**:
+>misp_url
+
+- **input**:
+>MISP events in standard, bare or legacy export format, restricted to the intended selection.
+
+- **output**:
+>Base64-encoded UTF-8 Timesketch JSONL with mandatory fields, source references and API warnings.
+
+- **references**:
+>https://timesketch.org/guides/user/importing-data/
+
+- **requirements**:
+>PyMISP
+
+-----
+
 #### [VirusTotal Collections Export](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/virustotal_collections.py)
 
 <img src=../logos/virustotal.png height=60>
@@ -775,18 +806,20 @@ Export MISP event and object indicators as a typed Wazuh CDB source list.
 
 <img src=../logos/yara.png height=60>
 
-This module is used to export MISP events to YARA.
+Export stored YARA collections and optionally generate literal IOC content searches.
 [[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/export_mod/yara_export.py)]
 
 - **features**:
->The module will dynamically generate YARA rules for attributes that are marked as to IDS. Basic metadata about the event is added to the rule.
->Attributes that are already YARA rules are also exported, with a rewritten rule name.
+>Produces a ZIP of unchanged stored YARA collections in separate namespaces, with a provenance and exclusion manifest. The default both mode exports yara attributes regardless of to_ids and generates literal, case-sensitive UTF-8 byte searches from supported IDS-marked attributes. Select rules or indicators to export only stored collections or generated IOC searches, respectively. A filename or domain matches bytes in scanned content, not a file's name or DNS activity. Deleted data is excluded. Collections and the complete output are compiled with filesystem includes disabled. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/export_mod/yara_export.md).
+
+- **config**:
+>mode
 
 - **input**:
->Attributes and Objects.
+>MISP events and object attributes in standard, bare or legacy export format.
 
 - **output**:
->A YARA file that can be used with the YARA scanning tool.
+>Base64-encoded ZIP containing rules/*.yara and manifest.json; load using the manifest namespaces.
 
 - **references**:
 >https://virustotal.github.io/yara/
