@@ -50,6 +50,56 @@ A module designed to retrieve an analysis report from the ANY.RUN Sandbox by its
 
 -----
 
+#### [AWS CloudTrail Audit Logs Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/aws_cloudtrail_import.py)
+
+Import AWS CloudTrail JSON or JSON.gz audit records with source provenance.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/aws_cloudtrail_import.py)]
+
+- **features**:
+>Imports native Records envelopes and individual CloudTrail event JSON offline. Maps identity, action, resource, outcome and time to unreviewed MISP objects. Links each record to a SHA-256 source file descriptor. Can attach the exact upload on request. Includes compatible object templates.
+
+- **input**:
+>Base64-encoded UTF-8 CloudTrail JSON or gzip-compressed JSON.
+
+- **output**:
+>AWS CloudTrail audit event, source file, and linked cloud account, resource and IAM role objects.
+
+- **references**:
+> - https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-event-reference-record-contents.html
+> - https://github.com/MISP/misp-modules/blob/main/documentation/import_mod/aws_cloudtrail_import.md
+
+- **requirements**:
+>PyMISP
+
+-----
+
+#### [Atlassian Cloud Audit Logs Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/atlassian_cloud_audit_import.py)
+
+Import Atlassian Administration audit CSV and Organizations Events API JSON.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/atlassian_cloud_audit_import.py)]
+
+- **features**:
+>Imports saved organization and site activity with reported actor, authentication, action and scope. Preserves affected entities and event containers with their source positions. Links every event to the original export. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/import_mod/atlassian_cloud_audit_import.md).
+
+- **data-source**:
+>internal
+
+- **input**:
+>Saved Atlassian Administration audit CSV or Organizations Events API JSON, optionally gzip-compressed.
+
+- **output**:
+>A source file and linked Atlassian Cloud audit event and entity objects.
+
+- **references**:
+> - https://support.atlassian.com/security-and-access-policies/docs/export-audit-logs/
+> - https://support.atlassian.com/security-and-access-policies/docs/view-audit-log-activities/
+> - https://developer.atlassian.com/cloud/admin/organization/rest/api-group-events/
+
+- **requirements**:
+> PyMISP
+
+-----
+
 #### [Autopsy and Mobile Forensic Selected Results Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/autopsy_import.py)
 
 Import selected browser, download, communication and application artifacts with forensic provenance.
@@ -79,6 +129,33 @@ Import selected browser, download, communication and application artifacts with 
 - **references**:
 > - https://www.autopsy.com/
 > - https://github.com/sleuthkit/autopsy/blob/develop/Core/src/org/sleuthkit/autopsy/directorytree/ExportCSVAction.java
+
+- **requirements**:
+>PyMISP
+
+-----
+
+#### [Azure Activity Log Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/azure_activity_log_import.py)
+
+Import Azure Resource Manager Activity Log evidence from local JSON exports.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/azure_activity_log_import.py)]
+
+- **features**:
+>Reads Azure CLI, REST, Azure Monitor diagnostic and AzureActivity Log Analytics JSON. Keeps caller, resource, operation, result and correlation identifiers with the source file. Preserves actor authorization and explicit role-assignment targets. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/import_mod/azure_activity_log_import.md).
+
+- **data-source**:
+>internal
+
+- **input**:
+>Saved Azure Activity Log JSON, optionally gzip-compressed.
+
+- **output**:
+>A source file object and linked azure-activity-log-event objects.
+
+- **references**:
+> - https://learn.microsoft.com/en-us/azure/azure-monitor/platform/activity-log-schema
+> - https://learn.microsoft.com/en-us/azure/azure-monitor/reference/tables/azureactivity
+> - https://learn.microsoft.com/en-us/azure/role-based-access-control/change-history-report
 
 - **requirements**:
 >PyMISP
@@ -233,6 +310,34 @@ Import Hayabusa timelines and Chainsaw hunt results as unreviewed detections wit
 
 -----
 
+#### [File and Media Metadata Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/file_metadata_import.py)
+
+Import metadata from an uploaded file without an external service.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/file_metadata_import.py)]
+
+- **features**:
+>Reads documents, images, audio and video with ExifTool. Preserves grouped raw parser values and unverified timestamp and location claims. Correlates selected names, identifiers and software across files. Optional embedded stream scanning and original file attachment. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/expansion/file_metadata.md).
+
+- **data-source**:
+>internal
+
+- **input**:
+>An uploaded file or base64 file data.
+
+- **output**:
+>A source file object and linked file-metadata object.
+
+- **references**:
+> - https://exiftool.org/exiftool_pod.html
+> - https://exiftool.org/TagNames/
+
+- **requirements**:
+> - PyMISP
+> - ExifTool 13.00 or later on PATH
+> - Perl Archive::Zip for Office Open XML and OpenDocument metadata
+
+-----
+
 #### [GoAML Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/goamlimport.py)
 
 <img src=../logos/goAML.jpg height=60>
@@ -254,6 +359,87 @@ Module to import MISP objects about financial transactions from GoAML files.
 
 - **requirements**:
 >PyMISP
+
+-----
+
+#### [GitHub Enterprise Audit Logs Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/github_enterprise_audit_import.py)
+
+Import saved GitHub organization and enterprise audit logs and Git events.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/github_enterprise_audit_import.py)]
+
+- **features**:
+>Reads audit log JSON and CSV, including GitHub's separate gzip-compressed Git-event JSON Lines export. Keeps reported enterprise, organization and repository scope and exposes actor, membership, policy and application fields. Links every event to the source file. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/import_mod/github_enterprise_audit_import.md).
+
+- **data-source**:
+>internal
+
+- **input**:
+>Saved GitHub audit events as JSON, JSON Lines or CSV, optionally gzip-compressed.
+
+- **output**:
+>A source file and linked GitHub audit event objects.
+
+- **references**:
+> - https://docs.github.com/en/enterprise-cloud@latest/admin/monitoring-activity-in-your-enterprise/reviewing-audit-logs-for-your-enterprise/exporting-audit-log-activity-for-your-enterprise
+> - https://docs.github.com/en/enterprise-cloud@latest/admin/monitoring-activity-in-your-enterprise/reviewing-audit-logs-for-your-enterprise/audit-log-events-for-your-enterprise
+
+- **requirements**:
+> PyMISP
+
+-----
+
+#### [Google Cloud Audit Logs Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/google_cloud_audit_import.py)
+
+Import native Google Cloud Audit Logs with authorization decisions and IAM binding changes.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/google_cloud_audit_import.py)]
+
+- **features**:
+>Reads saved Cloud Logging LogEntry JSON, including gcloud arrays and Logging API pages. Maps principals, services, methods, resources, status codes, permission checks and IAM binding changes. Links each imported event to the source file and optionally attaches the exact upload. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/import_mod/google_cloud_audit_import.md).
+
+- **data-source**:
+>internal
+
+- **input**:
+>A Google Cloud Logging LogEntry, JSON array or entries.list response, optionally gzip-compressed.
+
+- **output**:
+>A source file and linked Google Cloud audit events, permission checks and IAM binding changes.
+
+- **references**:
+> - https://docs.cloud.google.com/logging/docs/audit/understanding-audit-logs
+> - https://docs.cloud.google.com/logging/docs/reference/audit/auditlog/rest/Shared.Types/AuditLog
+> - https://docs.cloud.google.com/iam/docs/review-iam-policy-history
+
+- **requirements**:
+>PyMISP
+
+-----
+
+#### [Google Workspace Audit Logs Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/google_workspace_audit_import.py)
+
+Import saved Google Workspace login, admin, Drive and OAuth token activity.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/google_workspace_audit_import.py)]
+
+- **features**:
+>Reads Reports API activities.list JSON and keeps every nested event linked to its original activity ID. Preserves event parameters and exposes actor, Drive and OAuth identifiers for investigation. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/import_mod/google_workspace_audit_import.md).
+
+- **data-source**:
+>internal
+
+- **input**:
+>A saved activities.list JSON response, Activity or array of Activity records, optionally gzipped.
+
+- **output**:
+>A source file and linked Google Workspace audit activity and event objects.
+
+- **references**:
+> - https://developers.google.com/workspace/admin/reports/reference/rest/v1/activities/list
+> - https://developers.google.com/workspace/admin/reports/v1/appendix/activity/login
+> - https://developers.google.com/workspace/admin/reports/v1/appendix/activity/drive
+> - https://developers.google.com/workspace/admin/reports/v1/appendix/activity/token
+
+- **requirements**:
+> PyMISP
 
 -----
 
@@ -321,6 +507,59 @@ Module to import and parse reports from Lastline analysis links.
 
 -----
 
+#### [Kubernetes API Audit Logs Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/kubernetes_audit_import.py)
+
+Import Kubernetes API audit events and group stages by cluster and audit ID.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/kubernetes_audit_import.py)]
+
+- **features**:
+>Reads native audit.k8s.io/v1 JSON Lines, EKS CloudWatch Logs and AKS diagnostic or Log Analytics JSON. Preserves each stage, the reported identity, API target and response, and links them to the request and original export. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/import_mod/kubernetes_audit_import.md).
+
+- **data-source**:
+>internal
+
+- **input**:
+>Native Kubernetes audit v1 JSON Lines or JSON, EKS CloudWatch Logs JSON, or AKS diagnostic JSON.
+
+- **output**:
+>A source file and linked Kubernetes audit request and stage objects.
+
+- **references**:
+> - https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/
+> - https://kubernetes.io/docs/reference/config-api/apiserver-audit.v1/
+> - https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html
+> - https://learn.microsoft.com/en-us/azure/aks/monitor-aks-reference
+
+- **requirements**:
+> PyMISP
+
+-----
+
+#### [Microsoft Identity and Audit Logs Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/microsoft_audit_import.py)
+
+Import Entra sign-in and directory audit logs and Microsoft Purview Unified Audit Log exports.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/microsoft_audit_import.py)]
+
+- **features**:
+>Imports Entra sign-in and directory audit JSON and Purview Unified Audit Log JSON or AuditData CSV offline. Maps actions, actors, tenant and session context, results and times to unreviewed MISP objects. Links observations to a SHA-256 source file descriptor and supports attaching the exact upload by request.
+
+- **input**:
+>Base64-encoded UTF-8 Entra or Purview JSON, or a Purview CSV containing AuditData.
+
+- **output**:
+>Microsoft audit event, source file and optional linked cloud account objects.
+
+- **references**:
+> - https://learn.microsoft.com/en-us/graph/api/resources/signin?view=graph-rest-1.0
+> - https://learn.microsoft.com/en-us/graph/api/resources/directoryaudit?view=graph-rest-1.0
+> - https://learn.microsoft.com/en-us/purview/audit-log-export-records
+> - https://github.com/MISP/misp-modules/blob/main/documentation/import_mod/microsoft_audit_import.md
+
+- **requirements**:
+>PyMISP
+
+-----
+
 #### [MISP JSON Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/mispjson.py)
 
 Module to import MISP JSON format for merging MISP events.
@@ -350,6 +589,59 @@ Optical Character Recognition (OCR) module for MISP.
 
 - **output**:
 >freetext MISP attribute
+
+-----
+
+#### [OCSF Event Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/ocsf_import.py)
+
+Import OCSF events and selected observables from a local JSON or JSON Lines export.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/ocsf_import.py)]
+
+- **features**:
+>Preserves exact per-event JSON, schema and product provenance, and the source file SHA-256. Supports gzip, mixed event classes and extension fields, and extracts typed observables and selected endpoint, identity, process, file and finding fields. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/import_mod/ocsf_import.md).
+
+- **data-source**:
+>internal
+
+- **input**:
+>A UTF-8 JSON object, JSON array or JSON Lines upload, optionally gzip-compressed.
+
+- **output**:
+>A source file and linked ocsf-event objects.
+
+- **references**:
+> - https://schema.ocsf.io/
+> - https://github.com/ocsf/examples
+> - https://docs.aws.amazon.com/security-lake/latest/userguide/open-cybersecurity-schema-framework.html
+
+- **requirements**:
+>PyMISP
+
+-----
+
+#### [Okta System Log Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/okta_system_log_import.py)
+
+Import saved Okta System Log events with typed targets and investigation links.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/okta_system_log_import.py)]
+
+- **features**:
+>Reads native Okta System Log API JSON arrays or individual events. Captures actor, client IP, authentication context, outcome, targets, and distinct transaction, session and root session IDs. Connects events with shared reported identifiers and links them to the original upload. See the [usage guide](https://github.com/MISP/misp-modules/blob/main/documentation/import_mod/okta_system_log_import.md).
+
+- **data-source**:
+>internal
+
+- **input**:
+>Saved native Okta System Log API JSON, optionally gzip-compressed.
+
+- **output**:
+>A source file and linked Okta System Log event and target objects.
+
+- **references**:
+> - https://developer.okta.com/docs/reference/system-log-query/
+> - https://developer.okta.com/docs/api/openapi/okta-management/management/tags/systemlog
+
+- **requirements**:
+>PyMISP
 
 -----
 
@@ -613,6 +905,30 @@ Import Volatility 3 process, network, suspicious-memory and YARA results with me
 - **references**:
 > - https://github.com/volatilityfoundation/volatility3
 > - https://volatility3.readthedocs.io/
+
+- **requirements**:
+>PyMISP
+
+-----
+
+#### [Portable Web Archive Evidence Import](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/web_archive_import.py)
+
+Import local WARC and WACZ captures with response metadata and package digest verification.
+[[source code](https://github.com/MISP/misp-modules/tree/main/misp_modules/modules/import_mod/web_archive_import.py)]
+
+- **features**:
+>Reads WARC 1.0/1.1, gzip-compressed WARC and WACZ. Links HTTP(S) capture records and selected archived response metadata to page-capture objects and the SHA-256 of the original upload. Verifies declared WACZ manifest and resource digests. Original archive attachment is optional. No replay or network access.
+
+- **input**:
+>Base64-encoded WARC, WARC.GZ or WACZ file.
+
+- **output**:
+>A source file, WARC record metadata and linked page-capture objects.
+
+- **references**:
+> - https://specs.webrecorder.net/wacz/1.2.0/
+> - https://iipc.github.io/warc-specifications/specifications/warc-format/warc-1.1/
+> - https://github.com/MISP/misp-modules/blob/main/documentation/import_mod/web_archive_import.md
 
 - **requirements**:
 >PyMISP

@@ -263,6 +263,7 @@ For further Information see the [license file](https://misp.github.io/misp-modul
 * [Elastic ECS Export](https://misp.github.io/misp-modules/export_mod/#elastic-ecs-export) - Export event and object indicators as ECS threat indicators in Elasticsearch Bulk NDJSON.
 * [Fortinet FortiOS ACL Export](https://misp.github.io/misp-modules/export_mod/#fortinet-fortios-acl-export) - Export IDS-marked network attributes as FortiOS 7.4+ address objects, services and firewall policies.
 * [GoAML Export](https://misp.github.io/misp-modules/export_mod/#goaml-export) - This module is used to export MISP events containing transaction objects into GoAML format.
+* [Cited Intelligence Briefing Export](https://misp.github.io/misp-modules/export_mod/#cited-intelligence-briefing-export) - Export an intelligence briefing with key judgments, evidence citations and analyst review checks.
 * [Juniper Junos ACL Export](https://misp.github.io/misp-modules/export_mod/#juniper-junos-acl-export) - Export IDS-marked network attributes as Junos inet/inet6 stateless firewall filter set commands.
 * [Lite Export](https://misp.github.io/misp-modules/export_mod/#lite-export) - Lite export of a MISP event.
 * [EQL Query Export](https://misp.github.io/misp-modules/export_mod/#eql-query-export) - Export MISP event in Event Query Language
@@ -290,6 +291,7 @@ For further Information see the [license file](https://misp.github.io/misp-modul
 ### Import Modules
 * [ADTimeline Import](https://misp.github.io/misp-modules/import_mod/#adtimeline-import) - Import ADTimeline CSV replication metadata with linked-value times, server-scoped counters and source provenance.
 * [ANYRUN Sandbox Import](https://misp.github.io/misp-modules/import_mod/#anyrun-sandbox-import) - A module designed to retrieve an analysis report from the ANY.RUN Sandbox by its unique ID and extract results (such as verdict, malware tags, and IOCs), converting them into MISP attributes within your event.
+* [AWS CloudTrail Audit Logs Import](https://misp.github.io/misp-modules/import_mod/#aws-cloudtrail-audit-logs-import) - Import AWS CloudTrail JSON or JSON.gz audit records with source provenance.
 * [PDNS COF Importer](https://misp.github.io/misp-modules/import_mod/#pdns-cof-importer) - Passive DNS Common Output Format (COF) MISP importer
 * [CSV Import](https://misp.github.io/misp-modules/import_mod/#csv-import) - Import MISP attributes from base64-encoded UTF-8 CSV contents.
 * [Cuckoo Sandbox Import](https://misp.github.io/misp-modules/import_mod/#cuckoo-sandbox-import) - Module to import Cuckoo JSON.
@@ -301,6 +303,7 @@ For further Information see the [license file](https://misp.github.io/misp-modul
 * [Import Blueprint](https://misp.github.io/misp-modules/import_mod/#import-blueprint) - Generic blueprint to be copy-pasted to quickly boostrap creation of import module.
 * [Joe Sandbox Import](https://misp.github.io/misp-modules/import_mod/#joe-sandbox-import) - A module to import data from a Joe Sandbox analysis json report.
 * [Lastline Import](https://misp.github.io/misp-modules/import_mod/#lastline-import) - Deprecation notice: this module will be deprecated by December 2021, please use vmware_nsx module.  Module to import and parse reports from Lastline analysis links.
+* [Microsoft Identity and Audit Logs Import](https://misp.github.io/misp-modules/import_mod/#microsoft-identity-and-audit-logs-import) - Import Entra sign-in and directory audit logs and Microsoft Purview Unified Audit Log exports.
 * [MISP JSON Import](https://misp.github.io/misp-modules/import_mod/#misp-json-import) - Module to import MISP JSON format for merging MISP events.
 * [OCR Import](https://misp.github.io/misp-modules/import_mod/#ocr-import) - Optical Character Recognition (OCR) module for MISP.
 * [OpenIOC Import](https://misp.github.io/misp-modules/import_mod/#openioc-import) - Import legacy OpenIOC 1.0 and 1.1 files into MISP.
@@ -319,6 +322,7 @@ For further Information see the [license file](https://misp.github.io/misp-modul
 
 * [Volatility 3 Results Import](https://misp.github.io/misp-modules/import_mod/#volatility-3-results-import) - Import Volatility 3 process, network, suspicious-memory and YARA results with memory-image provenance.
 
+* [Portable Web Archive Evidence Import](https://misp.github.io/misp-modules/import_mod/#portable-web-archive-evidence-import) - Import local WARC and WACZ captures with response metadata and package digest verification.
 * [Zeek Observations Import](https://misp.github.io/misp-modules/import_mod/#zeek-observations-import) - Import selected Zeek records with timestamps, connection/Community IDs and capture provenance.
 
 ### Action Modules
